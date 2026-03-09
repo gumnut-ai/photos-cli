@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/stainless-sdks/photos-cli/internal/apiquery"
-	"github.com/stainless-sdks/photos-cli/internal/requestflag"
+	"github.com/gumnut-ai/photos-cli/internal/apiquery"
+	"github.com/gumnut-ai/photos-cli/internal/requestflag"
 	"github.com/stainless-sdks/photos-go"
 	"github.com/stainless-sdks/photos-go/option"
 	"github.com/tidwall/gjson"

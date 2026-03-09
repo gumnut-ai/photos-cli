@@ -12,8 +12,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/stainless-sdks/photos-cli/internal/autocomplete"
-	"github.com/stainless-sdks/photos-cli/internal/requestflag"
+	"github.com/gumnut-ai/photos-cli/internal/autocomplete"
+	"github.com/gumnut-ai/photos-cli/internal/requestflag"
 	docs "github.com/urfave/cli-docs/v3"
 	"github.com/urfave/cli/v3"
 )
