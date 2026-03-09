@@ -10,7 +10,7 @@ import (
 	"os"
 	"slices"
 
-	"github.com/stainless-sdks/photos-cli/pkg/cmd"
+	"github.com/gumnut-ai/photos-cli/pkg/cmd"
 	"github.com/stainless-sdks/photos-go"
 	"github.com/tidwall/gjson"
 	"github.com/urfave/cli/v3"

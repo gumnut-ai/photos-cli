@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/photos-cli
+module github.com/gumnut-ai/photos-cli
 
 go 1.25
 
