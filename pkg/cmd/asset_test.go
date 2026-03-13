@@ -5,7 +5,7 @@ package cmd
 import (
 	"testing"
 
-	"github.com/stainless-sdks/photos-cli/internal/mocktest"
+	"github.com/gumnut-ai/photos-cli/internal/mocktest"
 )
 
 func TestAssetsCreate(t *testing.T) {
@@ -108,6 +108,23 @@ func TestAssetsCheckExistence(t *testing.T) {
 			t, pipeData, "assets", "check-existence",
 			"--api-key", "string",
 			"--library-id", "library_id",
+		)
+	})
+}
+
+func TestAssetsCounts(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t, "assets", "counts",
+			"--api-key", "string",
+			"--album-id", "album_id",
+			"--group-by", "group_by",
+			"--library-id", "library_id",
+			"--limit", "1",
+			"--local-datetime-after", "'2019-12-27T18:11:19.117Z'",
+			"--local-datetime-before", "'2019-12-27T18:11:19.117Z'",
+			"--person-id", "person_id",
 		)
 	})
 }

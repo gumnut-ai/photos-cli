@@ -14,11 +14,11 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/stainless-sdks/photos-cli/internal/apiform"
-	"github.com/stainless-sdks/photos-cli/internal/apiquery"
-	"github.com/stainless-sdks/photos-cli/internal/debugmiddleware"
-	"github.com/stainless-sdks/photos-cli/internal/requestflag"
-	"github.com/stainless-sdks/photos-go/option"
+	"github.com/gumnut-ai/photos-cli/internal/apiform"
+	"github.com/gumnut-ai/photos-cli/internal/apiquery"
+	"github.com/gumnut-ai/photos-cli/internal/debugmiddleware"
+	"github.com/gumnut-ai/photos-cli/internal/requestflag"
+	"github.com/gumnut-ai/photos-sdk-go/option"
 
 	"github.com/goccy/go-yaml"
 	"github.com/urfave/cli/v3"

@@ -5,7 +5,7 @@ package cmd
 import (
 	"testing"
 
-	"github.com/stainless-sdks/photos-cli/internal/mocktest"
+	"github.com/gumnut-ai/photos-cli/internal/mocktest"
 )
 
 func TestFacesRetrieve(t *testing.T) {

@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/stainless-sdks/photos-cli/internal/apiquery"
-	"github.com/stainless-sdks/photos-cli/internal/requestflag"
-	"github.com/stainless-sdks/photos-go"
-	"github.com/stainless-sdks/photos-go/option"
+	"github.com/gumnut-ai/photos-cli/internal/apiquery"
+	"github.com/gumnut-ai/photos-cli/internal/requestflag"
+	"github.com/gumnut-ai/photos-sdk-go"
+	"github.com/gumnut-ai/photos-sdk-go/option"
 	"github.com/tidwall/gjson"
 	"github.com/urfave/cli/v3"
 )
@@ -169,6 +169,53 @@ var assetsCheckExistence = cli.Command{
 		},
 	},
 	Action:          handleAssetsCheckExistence,
+	HideHelpCommand: true,
+}
+
+var assetsCounts = cli.Command{
+	Name:    "counts",
+	Usage:   "Returns asset counts grouped by time period. Supports optional filtering by\nalbum, person, or date range. Results are ordered by time bucket descending.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[any]{
+			Name:      "album-id",
+			Usage:     "Filter by assets in a specific album",
+			QueryPath: "album_id",
+		},
+		&requestflag.Flag[string]{
+			Name:      "group-by",
+			Usage:     "Time period to group counts by. Currently only 'month' is supported.",
+			Default:   "month",
+			QueryPath: "group_by",
+		},
+		&requestflag.Flag[any]{
+			Name:      "library-id",
+			Usage:     "Library to count assets in (optional)",
+			QueryPath: "library_id",
+		},
+		&requestflag.Flag[int64]{
+			Name:      "limit",
+			Usage:     "Maximum number of time buckets to return",
+			Default:   100,
+			QueryPath: "limit",
+		},
+		&requestflag.Flag[any]{
+			Name:      "local-datetime-after",
+			Usage:     "Only include assets with local_datetime after this value (ISO 8601). Naive values compare directly against local_datetime; timezone-aware values are converted to UTC and compared against local_datetime adjusted by its stored offset.",
+			QueryPath: "local_datetime_after",
+		},
+		&requestflag.Flag[any]{
+			Name:      "local-datetime-before",
+			Usage:     "Only include assets with local_datetime before this value (ISO 8601). Naive values compare directly against local_datetime; timezone-aware values are converted to UTC and compared against local_datetime adjusted by its stored offset. Use the last time_bucket from a previous response to paginate.",
+			QueryPath: "local_datetime_before",
+		},
+		&requestflag.Flag[any]{
+			Name:      "person-id",
+			Usage:     "Filter by assets associated with a specific person ID",
+			QueryPath: "person_id",
+		},
+	},
+	Action:          handleAssetsCounts,
 	HideHelpCommand: true,
 }
 
@@ -383,6 +430,40 @@ func handleAssetsCheckExistence(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "assets check-existence", obj, format, transform)
+}
+
+func handleAssetsCounts(ctx context.Context, cmd *cli.Command) error {
+	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	params := photos.AssetCountsParams{}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatRepeat,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Assets.Counts(ctx, params, options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "assets counts", obj, format, transform)
 }
 
 func handleAssetsDownload(ctx context.Context, cmd *cli.Command) error {
