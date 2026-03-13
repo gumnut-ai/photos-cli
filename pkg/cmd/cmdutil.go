@@ -17,7 +17,7 @@ import (
 	"syscall"
 
 	"github.com/gumnut-ai/photos-cli/internal/jsonview"
-	"github.com/stainless-sdks/photos-go/option"
+	"github.com/gumnut-ai/photos-sdk-go/option"
 
 	"github.com/charmbracelet/x/term"
 	"github.com/itchyny/json2yaml"

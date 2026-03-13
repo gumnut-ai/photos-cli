@@ -11,7 +11,7 @@ import (
 	"slices"
 
 	"github.com/gumnut-ai/photos-cli/pkg/cmd"
-	"github.com/stainless-sdks/photos-go"
+	"github.com/gumnut-ai/photos-sdk-go"
 	"github.com/tidwall/gjson"
 	"github.com/urfave/cli/v3"
 )

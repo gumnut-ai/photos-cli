@@ -97,6 +97,7 @@ func init() {
 					&assetsList,
 					&assetsDelete,
 					&assetsCheckExistence,
+					&assetsCounts,
 					&assetsDownload,
 					&assetsDownloadThumbnail,
 				},

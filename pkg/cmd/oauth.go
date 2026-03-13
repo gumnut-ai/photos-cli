@@ -9,8 +9,8 @@ import (
 
 	"github.com/gumnut-ai/photos-cli/internal/apiquery"
 	"github.com/gumnut-ai/photos-cli/internal/requestflag"
-	"github.com/stainless-sdks/photos-go"
-	"github.com/stainless-sdks/photos-go/option"
+	"github.com/gumnut-ai/photos-sdk-go"
+	"github.com/gumnut-ai/photos-sdk-go/option"
 	"github.com/tidwall/gjson"
 	"github.com/urfave/cli/v3"
 )

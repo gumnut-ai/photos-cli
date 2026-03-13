@@ -8,9 +8,9 @@ require (
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/charmbracelet/x/term v0.2.1
 	github.com/goccy/go-yaml v1.18.0
+	github.com/gumnut-ai/photos-sdk-go v0.1.0
 	github.com/itchyny/json2yaml v0.1.4
 	github.com/muesli/reflow v0.3.0
-	github.com/stainless-sdks/photos-go v0.0.0-20260309164733-59b6eb8371b3
 	github.com/stretchr/testify v1.10.0
 	github.com/tidwall/gjson v1.18.0
 	github.com/tidwall/pretty v1.2.1
