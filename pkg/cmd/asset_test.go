@@ -12,8 +12,9 @@ func TestAssetsCreate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "assets", "create",
+			t,
 			"--api-key", "string",
+			"assets", "create",
 			"--asset-data", "Example data",
 			"--device-asset-id", "device_asset_id",
 			"--device-id", "device_id",
@@ -33,8 +34,9 @@ func TestAssetsCreate(t *testing.T) {
 			"file_modified_at: '2019-12-27T18:11:19.117Z'\n" +
 			"library_id: library_id\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "assets", "create",
+			t, pipeData,
 			"--api-key", "string",
+			"assets", "create",
 		)
 	})
 }
@@ -43,8 +45,9 @@ func TestAssetsRetrieve(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "assets", "retrieve",
+			t,
 			"--api-key", "string",
+			"assets", "retrieve",
 			"--asset-id", "asset_id",
 		)
 	})
@@ -54,8 +57,9 @@ func TestAssetsList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "assets", "list",
+			t,
 			"--api-key", "string",
+			"assets", "list",
 			"--max-items", "10",
 			"--album-id", "album_id",
 			"--id", "[string, string]",
@@ -73,8 +77,9 @@ func TestAssetsDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "assets", "delete",
+			t,
 			"--api-key", "string",
+			"assets", "delete",
 			"--asset-id", "asset_id",
 		)
 	})
@@ -84,8 +89,9 @@ func TestAssetsCheckExistence(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "assets", "check-existence",
+			t,
 			"--api-key", "string",
+			"assets", "check-existence",
 			"--library-id", "library_id",
 			"--checksum-sha1", "[string]",
 			"--checksum", "[string]",
@@ -105,8 +111,9 @@ func TestAssetsCheckExistence(t *testing.T) {
 			"  - string\n" +
 			"deviceId: deviceId\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "assets", "check-existence",
+			t, pipeData,
 			"--api-key", "string",
+			"assets", "check-existence",
 			"--library-id", "library_id",
 		)
 	})
@@ -116,8 +123,9 @@ func TestAssetsCounts(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "assets", "counts",
+			t,
 			"--api-key", "string",
+			"assets", "counts",
 			"--album-id", "album_id",
 			"--group-by", "group_by",
 			"--library-id", "library_id",
@@ -133,8 +141,9 @@ func TestAssetsDownload(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "assets", "download",
+			t,
 			"--api-key", "string",
+			"assets", "download",
 			"--asset-id", "asset_id",
 			"--output", "/dev/null",
 		)
@@ -145,8 +154,9 @@ func TestAssetsDownloadThumbnail(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "assets", "download-thumbnail",
+			t,
 			"--api-key", "string",
+			"assets", "download-thumbnail",
 			"--asset-id", "asset_id",
 			"--size", "size",
 			"--output", "/dev/null",
