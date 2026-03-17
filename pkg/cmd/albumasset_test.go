@@ -12,8 +12,9 @@ func TestAlbumAssetsList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "album-assets", "list",
+			t,
 			"--api-key", "string",
+			"album-assets", "list",
 			"--max-items", "10",
 			"--album-id", "album_id",
 			"--asset-id", "asset_id",
@@ -29,8 +30,9 @@ func TestAlbumAssetsGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "album-assets", "get",
+			t,
 			"--api-key", "string",
+			"album-assets", "get",
 			"--album-asset-id", "album_asset_id",
 		)
 	})

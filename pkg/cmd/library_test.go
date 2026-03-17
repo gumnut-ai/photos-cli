@@ -12,8 +12,9 @@ func TestLibrariesCreate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "libraries", "create",
+			t,
 			"--api-key", "string",
+			"libraries", "create",
 			"--name", "name",
 			"--description", "description",
 		)
@@ -25,8 +26,9 @@ func TestLibrariesCreate(t *testing.T) {
 			"name: name\n" +
 			"description: description\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "libraries", "create",
+			t, pipeData,
 			"--api-key", "string",
+			"libraries", "create",
 		)
 	})
 }
@@ -35,8 +37,9 @@ func TestLibrariesRetrieve(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "libraries", "retrieve",
+			t,
 			"--api-key", "string",
+			"libraries", "retrieve",
 			"--library-id", "library_id",
 		)
 	})
@@ -46,8 +49,9 @@ func TestLibrariesUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "libraries", "update",
+			t,
 			"--api-key", "string",
+			"libraries", "update",
 			"--library-id", "library_id",
 			"--description", "description",
 			"--name", "name",
@@ -60,8 +64,9 @@ func TestLibrariesUpdate(t *testing.T) {
 			"description: description\n" +
 			"name: name\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "libraries", "update",
+			t, pipeData,
 			"--api-key", "string",
+			"libraries", "update",
 			"--library-id", "library_id",
 		)
 	})
@@ -71,8 +76,9 @@ func TestLibrariesList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "libraries", "list",
+			t,
 			"--api-key", "string",
+			"libraries", "list",
 		)
 	})
 }
@@ -81,8 +87,9 @@ func TestLibrariesDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "libraries", "delete",
+			t,
 			"--api-key", "string",
+			"libraries", "delete",
 			"--library-id", "library_id",
 		)
 	})

@@ -12,8 +12,9 @@ func TestSearchSearch(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "search", "search",
+			t,
 			"--api-key", "string",
+			"search", "search",
 			"--captured-after", "'2019-12-27T18:11:19.117Z'",
 			"--captured-before", "'2019-12-27T18:11:19.117Z'",
 			"--library-id", "library_id",
@@ -30,8 +31,9 @@ func TestSearchSearchAssets(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "search", "search-assets",
+			t,
 			"--api-key", "string",
+			"search", "search-assets",
 			"--captured-after", "'2019-12-27T18:11:19.117Z'",
 			"--captured-before", "'2019-12-27T18:11:19.117Z'",
 			"--image", "Example data",
@@ -58,8 +60,9 @@ func TestSearchSearchAssets(t *testing.T) {
 			"query: query\n" +
 			"threshold: 0\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "search", "search-assets",
+			t, pipeData,
 			"--api-key", "string",
+			"search", "search-assets",
 		)
 	})
 }

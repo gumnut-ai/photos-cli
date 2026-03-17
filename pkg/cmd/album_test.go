@@ -12,8 +12,9 @@ func TestAlbumsCreate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "albums", "create",
+			t,
 			"--api-key", "string",
+			"albums", "create",
 			"--description", "description",
 			"--library-id", "library_id",
 			"--name", "name",
@@ -27,8 +28,9 @@ func TestAlbumsCreate(t *testing.T) {
 			"library_id: library_id\n" +
 			"name: name\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "albums", "create",
+			t, pipeData,
 			"--api-key", "string",
+			"albums", "create",
 		)
 	})
 }
@@ -37,8 +39,9 @@ func TestAlbumsRetrieve(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "albums", "retrieve",
+			t,
 			"--api-key", "string",
+			"albums", "retrieve",
 			"--album-id", "album_id",
 		)
 	})
@@ -48,8 +51,9 @@ func TestAlbumsUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "albums", "update",
+			t,
 			"--api-key", "string",
+			"albums", "update",
 			"--album-id", "album_id",
 			"--description", "description",
 			"--name", "name",
@@ -62,8 +66,9 @@ func TestAlbumsUpdate(t *testing.T) {
 			"description: description\n" +
 			"name: name\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "albums", "update",
+			t, pipeData,
 			"--api-key", "string",
+			"albums", "update",
 			"--album-id", "album_id",
 		)
 	})
@@ -73,8 +78,9 @@ func TestAlbumsList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "albums", "list",
+			t,
 			"--api-key", "string",
+			"albums", "list",
 			"--max-items", "10",
 			"--asset-id", "asset_id",
 			"--id", "[string, string]",
@@ -89,8 +95,9 @@ func TestAlbumsDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "albums", "delete",
+			t,
 			"--api-key", "string",
+			"albums", "delete",
 			"--album-id", "album_id",
 		)
 	})

@@ -12,8 +12,9 @@ func TestPeopleCreate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "people", "create",
+			t,
 			"--api-key", "string",
+			"people", "create",
 			"--birth-date", "'2019-12-27'",
 			"--is-favorite=true",
 			"--is-hidden=true",
@@ -33,8 +34,9 @@ func TestPeopleCreate(t *testing.T) {
 			"name: name\n" +
 			"thumbnail_face_id: thumbnail_face_id\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "people", "create",
+			t, pipeData,
 			"--api-key", "string",
+			"people", "create",
 		)
 	})
 }
@@ -43,8 +45,9 @@ func TestPeopleRetrieve(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "people", "retrieve",
+			t,
 			"--api-key", "string",
+			"people", "retrieve",
 			"--person-id", "person_id",
 		)
 	})
@@ -54,8 +57,9 @@ func TestPeopleUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "people", "update",
+			t,
 			"--api-key", "string",
+			"people", "update",
 			"--person-id", "person_id",
 			"--birth-date", "'2019-12-27'",
 			"--is-favorite=true",
@@ -74,8 +78,9 @@ func TestPeopleUpdate(t *testing.T) {
 			"name: name\n" +
 			"thumbnail_face_id: thumbnail_face_id\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "people", "update",
+			t, pipeData,
 			"--api-key", "string",
+			"people", "update",
 			"--person-id", "person_id",
 		)
 	})
@@ -85,8 +90,9 @@ func TestPeopleList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "people", "list",
+			t,
 			"--api-key", "string",
+			"people", "list",
 			"--max-items", "10",
 			"--album-id", "album_id",
 			"--asset-id", "asset_id",
@@ -102,8 +108,9 @@ func TestPeopleDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "people", "delete",
+			t,
 			"--api-key", "string",
+			"people", "delete",
 			"--person-id", "person_id",
 		)
 	})
