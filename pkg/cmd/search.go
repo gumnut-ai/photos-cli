@@ -37,7 +37,7 @@ var searchSearch = cli.Command{
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Usage:     "Number of results per page",
+			Usage:     "Number of results per page (1-200)",
 			Default:   50,
 			QueryPath: "limit",
 		},
@@ -95,7 +95,7 @@ var searchSearchAssets = cli.Command{
 		},
 		&requestflag.Flag[int64]{
 			Name:     "limit",
-			Usage:    "Number of results per page",
+			Usage:    "Number of results per page (1-200)",
 			Default:  50,
 			BodyPath: "limit",
 		},

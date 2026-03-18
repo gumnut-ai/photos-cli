@@ -42,7 +42,7 @@ var albumAssetsList = cli.Command{
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Usage:     "Max number of results to return",
+			Usage:     "Max number of results to return (1-200)",
 			Default:   100,
 			QueryPath: "limit",
 		},
