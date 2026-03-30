@@ -36,7 +36,7 @@ func TestSearchSearchAssets(t *testing.T) {
 			"search", "search-assets",
 			"--captured-after", "'2019-12-27T18:11:19.117Z'",
 			"--captured-before", "'2019-12-27T18:11:19.117Z'",
-			"--image", "image",
+			"--image", "Example data",
 			"--library-id", "library_id",
 			"--limit", "1",
 			"--page", "1",
@@ -51,7 +51,7 @@ func TestSearchSearchAssets(t *testing.T) {
 		pipeData := []byte("" +
 			"captured_after: '2019-12-27T18:11:19.117Z'\n" +
 			"captured_before: '2019-12-27T18:11:19.117Z'\n" +
-			"image: image\n" +
+			"image: Example data\n" +
 			"library_id: library_id\n" +
 			"limit: 1\n" +
 			"page: 1\n" +
