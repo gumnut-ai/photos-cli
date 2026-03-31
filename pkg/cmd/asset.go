@@ -22,6 +22,7 @@ var assetsCreate = cli.Command{
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:     "asset-data",
+			Usage:    "The asset file to upload",
 			Required: true,
 			BodyPath: "asset_data",
 		},
