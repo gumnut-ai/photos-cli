@@ -156,7 +156,7 @@ var peopleList = cli.Command{
 
 var peopleDelete = cli.Command{
 	Name:    "delete",
-	Usage:   "Deletes a specific person. Associated faces will have their person_id set to the\nclosest matching person, or null if no one matches.",
+	Usage:   "Deletes a specific person. Orphaned faces will be re-clustered in the next\nclustering pass.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
