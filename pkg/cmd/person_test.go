@@ -96,11 +96,11 @@ func TestPeopleList(t *testing.T) {
 			"--max-items", "10",
 			"--album-id", "album_id",
 			"--asset-id", "asset_id",
-			"--has-name=true",
 			"--id", "[string, string]",
 			"--library-id", "library_id",
 			"--limit", "1",
 			"--name", "name",
+			"--name-filter", "named",
 			"--starting-after-id", "starting_after_id",
 		)
 	})
