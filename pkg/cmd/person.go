@@ -101,7 +101,7 @@ var peopleUpdate = cli.Command{
 
 var peopleList = cli.Command{
 	Name:    "list",
-	Usage:   "Retrieves a paginated list of people, ordered by creation time, descending. Can\nbe filtered by specific person IDs, name, or whether the person has been named.",
+	Usage:   "Retrieves a paginated list of people, ordered by creation time, descending.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[any]{
@@ -113,11 +113,6 @@ var peopleList = cli.Command{
 			Name:      "asset-id",
 			Usage:     "Include only people associated with this asset ID",
 			QueryPath: "asset_id",
-		},
-		&requestflag.Flag[any]{
-			Name:      "has-name",
-			Usage:     "Filter by whether the person has a name assigned (true = named only, false = unnamed only)",
-			QueryPath: "has_name",
 		},
 		&requestflag.Flag[any]{
 			Name:      "id",
@@ -139,6 +134,11 @@ var peopleList = cli.Command{
 			Name:      "name",
 			Usage:     "Filter by name using case-insensitive substring matching",
 			QueryPath: "name",
+		},
+		&requestflag.Flag[any]{
+			Name:      "name-filter",
+			Usage:     "Filter by name status: 'named' returns only people with a name, 'unnamed' returns only people without a name, 'all' returns everyone. Defaults to 'named', or 'all' when ids are provided.",
+			QueryPath: "name_filter",
 		},
 		&requestflag.Flag[any]{
 			Name:      "starting-after-id",
