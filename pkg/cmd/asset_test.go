@@ -3,6 +3,7 @@
 package cmd
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/gumnut-ai/photos-cli/internal/mocktest"
@@ -15,7 +16,7 @@ func TestAssetsCreate(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"assets", "create",
-			"--asset-data", "Example data",
+			"--asset-data", mocktest.TestFile(t, "Example data"),
 			"--device-asset-id", "device_asset_id",
 			"--device-id", "device_id",
 			"--file-created-at", "'2019-12-27T18:11:19.117Z'",
@@ -25,14 +26,17 @@ func TestAssetsCreate(t *testing.T) {
 	})
 
 	t.Run("piping data", func(t *testing.T) {
+		testFile := mocktest.TestFile(t, "Example data")
 		// Test piping YAML data over stdin
-		pipeData := []byte("" +
+		pipeDataStr := "" +
 			"asset_data: Example data\n" +
 			"device_asset_id: device_asset_id\n" +
 			"device_id: device_id\n" +
 			"file_created_at: '2019-12-27T18:11:19.117Z'\n" +
 			"file_modified_at: '2019-12-27T18:11:19.117Z'\n" +
-			"library_id: library_id\n")
+			"library_id: library_id\n"
+		pipeDataStr = strings.ReplaceAll(pipeDataStr, "Example data", testFile)
+		pipeData := []byte(pipeDataStr)
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
