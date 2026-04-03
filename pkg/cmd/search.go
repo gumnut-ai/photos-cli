@@ -84,9 +84,10 @@ var searchSearchAssets = cli.Command{
 			BodyPath: "captured_before",
 		},
 		&requestflag.Flag[any]{
-			Name:     "image",
-			Usage:    "Image file to search for similar assets. Can be combined with text query.",
-			BodyPath: "image",
+			Name:      "image",
+			Usage:     "Image file to search for similar assets. Can be combined with text query.",
+			BodyPath:  "image",
+			FileInput: true,
 		},
 		&requestflag.Flag[any]{
 			Name:     "library-id",

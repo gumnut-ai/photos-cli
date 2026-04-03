@@ -21,10 +21,11 @@ var assetsCreate = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "asset-data",
-			Usage:    "The asset file to upload",
-			Required: true,
-			BodyPath: "asset_data",
+			Name:      "asset-data",
+			Usage:     "The asset file to upload",
+			Required:  true,
+			BodyPath:  "asset_data",
+			FileInput: true,
 		},
 		&requestflag.Flag[string]{
 			Name:     "device-asset-id",
