@@ -80,7 +80,7 @@ var facesList = cli.Command{
 		&requestflag.Flag[int64]{
 			Name:      "limit",
 			Usage:     "Max number of faces to return (1-200)",
-			Default:   100,
+			Default:   20,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[any]{

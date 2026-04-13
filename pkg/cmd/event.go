@@ -48,7 +48,7 @@ var eventsGet = cli.Command{
 		&requestflag.Flag[int64]{
 			Name:      "limit",
 			Usage:     "Maximum number of events to return (1-200)",
-			Default:   100,
+			Default:   20,
 			QueryPath: "limit",
 		},
 	},

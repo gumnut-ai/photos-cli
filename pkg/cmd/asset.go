@@ -94,7 +94,7 @@ var assetsList = cli.Command{
 		&requestflag.Flag[int64]{
 			Name:      "limit",
 			Usage:     "Max number of assets to return (1-200)",
-			Default:   100,
+			Default:   20,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[any]{
@@ -199,7 +199,7 @@ var assetsCounts = cli.Command{
 		&requestflag.Flag[int64]{
 			Name:      "limit",
 			Usage:     "Maximum number of time buckets to return (1-200)",
-			Default:   100,
+			Default:   20,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[any]{
