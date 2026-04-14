@@ -121,25 +121,6 @@ var facesDelete = cli.Command{
 	HideHelpCommand: true,
 }
 
-var facesDownloadThumbnail = cli.Command{
-	Name:    "download-thumbnail",
-	Usage:   "Retrieves a thumbnail for a specific face.",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "face-id",
-			Required: true,
-		},
-		&requestflag.Flag[string]{
-			Name:    "output",
-			Aliases: []string{"o"},
-			Usage:   "The file where the response contents will be stored. Use the value '-' to force output to stdout.",
-		},
-	},
-	Action:          handleFacesDownloadThumbnail,
-	HideHelpCommand: true,
-}
-
 func handleFacesRetrieve(ctx context.Context, cmd *cli.Command) error {
 	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -296,37 +277,4 @@ func handleFacesDelete(ctx context.Context, cmd *cli.Command) error {
 		params,
 		options...,
 	)
-}
-
-func handleFacesDownloadThumbnail(ctx context.Context, cmd *cli.Command) error {
-	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("face-id") && len(unusedArgs) > 0 {
-		cmd.Set("face-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatRepeat,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	response, err := client.Faces.DownloadThumbnail(ctx, cmd.Value("face-id").(string), options...)
-	if err != nil {
-		return err
-	}
-	message, err := writeBinaryResponse(response, os.Stdout, cmd.String("output"))
-	if message != "" {
-		fmt.Println(message)
-	}
-	return err
 }
