@@ -140,30 +140,3 @@ func TestAssetsCounts(t *testing.T) {
 		)
 	})
 }
-
-func TestAssetsDownload(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"assets", "download",
-			"--asset-id", "asset_id",
-			"--output", "/dev/null",
-		)
-	})
-}
-
-func TestAssetsDownloadThumbnail(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"assets", "download-thumbnail",
-			"--asset-id", "asset_id",
-			"--size", "size",
-			"--output", "/dev/null",
-		)
-	})
-}

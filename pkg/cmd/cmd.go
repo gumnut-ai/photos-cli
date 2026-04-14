@@ -101,8 +101,6 @@ func init() {
 					&assetsDelete,
 					&assetsCheckExistence,
 					&assetsCounts,
-					&assetsDownload,
-					&assetsDownloadThumbnail,
 				},
 			},
 			{
@@ -153,7 +151,6 @@ func init() {
 					&facesUpdate,
 					&facesList,
 					&facesDelete,
-					&facesDownloadThumbnail,
 				},
 			},
 			{
