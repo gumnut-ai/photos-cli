@@ -142,7 +142,7 @@ var peopleList = cli.Command{
 		},
 		&requestflag.Flag[any]{
 			Name:      "starting-after-id",
-			Usage:     "Person ID to start listing people after",
+			Usage:     "Cursor for pagination. Pass the `id` of the last person from the previous page to get the next page.",
 			QueryPath: "starting_after_id",
 		},
 		&requestflag.Flag[int64]{

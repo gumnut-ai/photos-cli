@@ -90,7 +90,7 @@ var facesList = cli.Command{
 		},
 		&requestflag.Flag[any]{
 			Name:      "starting-after-id",
-			Usage:     "Face ID to start listing faces after",
+			Usage:     "Cursor for pagination. Pass the `id` of the last face from the previous page to get the next page.",
 			QueryPath: "starting_after_id",
 		},
 		&requestflag.Flag[int64]{

@@ -101,7 +101,7 @@ var albumsList = cli.Command{
 		},
 		&requestflag.Flag[any]{
 			Name:      "starting-after-id",
-			Usage:     "Album ID to start listing albums after",
+			Usage:     "Cursor for pagination. Pass the `id` of the last album from the previous page to get the next page.",
 			QueryPath: "starting_after_id",
 		},
 		&requestflag.Flag[int64]{
