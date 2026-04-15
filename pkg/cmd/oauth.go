@@ -110,8 +110,9 @@ func handleOAuthAuthURL(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "oauth auth-url", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "oauth auth-url", obj, format, explicitFormat, transform)
 }
 
 func handleOAuthExchange(ctx context.Context, cmd *cli.Command) error {
@@ -144,8 +145,9 @@ func handleOAuthExchange(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "oauth exchange", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "oauth exchange", obj, format, explicitFormat, transform)
 }
 
 func handleOAuthLogoutEndpoint(ctx context.Context, cmd *cli.Command) error {
@@ -176,6 +178,7 @@ func handleOAuthLogoutEndpoint(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "oauth logout-endpoint", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "oauth logout-endpoint", obj, format, explicitFormat, transform)
 }

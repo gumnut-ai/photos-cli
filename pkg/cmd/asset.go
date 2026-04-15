@@ -252,8 +252,9 @@ func handleAssetsCreate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "assets create", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "assets create", obj, format, explicitFormat, transform)
 }
 
 func handleAssetsRetrieve(ctx context.Context, cmd *cli.Command) error {
@@ -287,8 +288,9 @@ func handleAssetsRetrieve(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "assets retrieve", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "assets retrieve", obj, format, explicitFormat, transform)
 }
 
 func handleAssetsList(ctx context.Context, cmd *cli.Command) error {
@@ -313,6 +315,7 @@ func handleAssetsList(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
 	if format == "raw" {
 		var res []byte
@@ -322,14 +325,14 @@ func handleAssetsList(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "assets list", obj, format, transform)
+		return ShowJSON(os.Stdout, os.Stderr, "assets list", obj, format, explicitFormat, transform)
 	} else {
 		iter := client.Assets.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "assets list", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, os.Stderr, "assets list", iter, format, explicitFormat, transform, maxItems)
 	}
 }
 
@@ -388,8 +391,9 @@ func handleAssetsCheckExistence(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "assets check-existence", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "assets check-existence", obj, format, explicitFormat, transform)
 }
 
 func handleAssetsCounts(ctx context.Context, cmd *cli.Command) error {
@@ -422,6 +426,7 @@ func handleAssetsCounts(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "assets counts", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "assets counts", obj, format, explicitFormat, transform)
 }

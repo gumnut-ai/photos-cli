@@ -157,8 +157,9 @@ func handleSearchSearch(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "search search", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "search search", obj, format, explicitFormat, transform)
 }
 
 func handleSearchSearchAssets(ctx context.Context, cmd *cli.Command) error {
@@ -191,6 +192,7 @@ func handleSearchSearchAssets(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "search search-assets", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "search search-assets", obj, format, explicitFormat, transform)
 }

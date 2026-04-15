@@ -198,8 +198,9 @@ func handlePeopleCreate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "people create", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "people create", obj, format, explicitFormat, transform)
 }
 
 func handlePeopleRetrieve(ctx context.Context, cmd *cli.Command) error {
@@ -233,8 +234,9 @@ func handlePeopleRetrieve(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "people retrieve", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "people retrieve", obj, format, explicitFormat, transform)
 }
 
 func handlePeopleUpdate(ctx context.Context, cmd *cli.Command) error {
@@ -275,8 +277,9 @@ func handlePeopleUpdate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "people update", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "people update", obj, format, explicitFormat, transform)
 }
 
 func handlePeopleList(ctx context.Context, cmd *cli.Command) error {
@@ -301,6 +304,7 @@ func handlePeopleList(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
 	if format == "raw" {
 		var res []byte
@@ -310,14 +314,14 @@ func handlePeopleList(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "people list", obj, format, transform)
+		return ShowJSON(os.Stdout, os.Stderr, "people list", obj, format, explicitFormat, transform)
 	} else {
 		iter := client.People.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "people list", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, os.Stderr, "people list", iter, format, explicitFormat, transform, maxItems)
 	}
 }
 

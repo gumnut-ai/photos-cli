@@ -157,8 +157,9 @@ func handleAlbumsCreate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "albums create", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "albums create", obj, format, explicitFormat, transform)
 }
 
 func handleAlbumsRetrieve(ctx context.Context, cmd *cli.Command) error {
@@ -192,8 +193,9 @@ func handleAlbumsRetrieve(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "albums retrieve", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "albums retrieve", obj, format, explicitFormat, transform)
 }
 
 func handleAlbumsUpdate(ctx context.Context, cmd *cli.Command) error {
@@ -234,8 +236,9 @@ func handleAlbumsUpdate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "albums update", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "albums update", obj, format, explicitFormat, transform)
 }
 
 func handleAlbumsList(ctx context.Context, cmd *cli.Command) error {
@@ -260,6 +263,7 @@ func handleAlbumsList(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
 	if format == "raw" {
 		var res []byte
@@ -269,14 +273,14 @@ func handleAlbumsList(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "albums list", obj, format, transform)
+		return ShowJSON(os.Stdout, os.Stderr, "albums list", obj, format, explicitFormat, transform)
 	} else {
 		iter := client.Albums.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "albums list", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, os.Stderr, "albums list", iter, format, explicitFormat, transform, maxItems)
 	}
 }
 
