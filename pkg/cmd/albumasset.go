@@ -48,7 +48,7 @@ var albumAssetsList = cli.Command{
 		},
 		&requestflag.Flag[any]{
 			Name:      "starting-after-id",
-			Usage:     "Album-asset ID to start listing after",
+			Usage:     "Cursor for pagination. Pass the `id` of the last album-asset from the previous page to get the next page.",
 			QueryPath: "starting_after_id",
 		},
 		&requestflag.Flag[int64]{
