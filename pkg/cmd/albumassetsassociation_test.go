@@ -8,18 +8,6 @@ import (
 	"github.com/gumnut-ai/photos-cli/internal/mocktest"
 )
 
-func TestAlbumsAssetsAssociationsList(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"albums:assets-associations", "list",
-			"--album-id", "album_id",
-		)
-	})
-}
-
 func TestAlbumsAssetsAssociationsAdd(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
