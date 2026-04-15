@@ -98,8 +98,9 @@ func handleAlbumsAssetsAssociationsList(ctx context.Context, cmd *cli.Command) e
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "albums:assets-associations list", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "albums:assets-associations list", obj, format, explicitFormat, transform)
 }
 
 func handleAlbumsAssetsAssociationsAdd(ctx context.Context, cmd *cli.Command) error {
@@ -140,8 +141,9 @@ func handleAlbumsAssetsAssociationsAdd(ctx context.Context, cmd *cli.Command) er
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "albums:assets-associations add", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "albums:assets-associations add", obj, format, explicitFormat, transform)
 }
 
 func handleAlbumsAssetsAssociationsRemove(ctx context.Context, cmd *cli.Command) error {

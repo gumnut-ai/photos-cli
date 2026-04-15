@@ -123,8 +123,9 @@ func handleLibrariesCreate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "libraries create", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "libraries create", obj, format, explicitFormat, transform)
 }
 
 func handleLibrariesRetrieve(ctx context.Context, cmd *cli.Command) error {
@@ -158,8 +159,9 @@ func handleLibrariesRetrieve(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "libraries retrieve", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "libraries retrieve", obj, format, explicitFormat, transform)
 }
 
 func handleLibrariesUpdate(ctx context.Context, cmd *cli.Command) error {
@@ -200,8 +202,9 @@ func handleLibrariesUpdate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "libraries update", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "libraries update", obj, format, explicitFormat, transform)
 }
 
 func handleLibrariesList(ctx context.Context, cmd *cli.Command) error {
@@ -232,8 +235,9 @@ func handleLibrariesList(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "libraries list", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "libraries list", obj, format, explicitFormat, transform)
 }
 
 func handleLibrariesDelete(ctx context.Context, cmd *cli.Command) error {

@@ -159,8 +159,9 @@ func handleFacesRetrieve(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "faces retrieve", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "faces retrieve", obj, format, explicitFormat, transform)
 }
 
 func handleFacesUpdate(ctx context.Context, cmd *cli.Command) error {
@@ -201,8 +202,9 @@ func handleFacesUpdate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "faces update", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "faces update", obj, format, explicitFormat, transform)
 }
 
 func handleFacesList(ctx context.Context, cmd *cli.Command) error {
@@ -227,6 +229,7 @@ func handleFacesList(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
 	if format == "raw" {
 		var res []byte
@@ -236,14 +239,14 @@ func handleFacesList(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "faces list", obj, format, transform)
+		return ShowJSON(os.Stdout, os.Stderr, "faces list", obj, format, explicitFormat, transform)
 	} else {
 		iter := client.Faces.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "faces list", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, os.Stderr, "faces list", iter, format, explicitFormat, transform, maxItems)
 	}
 }
 
