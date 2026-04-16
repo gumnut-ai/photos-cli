@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/gumnut-ai/photos-cli/internal/apiquery"
 	"github.com/gumnut-ai/photos-cli/internal/requestflag"
@@ -112,7 +111,12 @@ func handleOAuthAuthURL(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "oauth auth-url", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "oauth auth-url",
+		Transform:      transform,
+	})
 }
 
 func handleOAuthExchange(ctx context.Context, cmd *cli.Command) error {
@@ -147,7 +151,12 @@ func handleOAuthExchange(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "oauth exchange", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "oauth exchange",
+		Transform:      transform,
+	})
 }
 
 func handleOAuthLogoutEndpoint(ctx context.Context, cmd *cli.Command) error {
@@ -180,5 +189,10 @@ func handleOAuthLogoutEndpoint(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "oauth logout-endpoint", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "oauth logout-endpoint",
+		Transform:      transform,
+	})
 }
