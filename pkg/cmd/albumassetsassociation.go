@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/gumnut-ai/photos-cli/internal/apiquery"
 	"github.com/gumnut-ai/photos-cli/internal/requestflag"
@@ -93,7 +92,12 @@ func handleAlbumsAssetsAssociationsAdd(ctx context.Context, cmd *cli.Command) er
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "albums:assets-associations add", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "albums:assets-associations add",
+		Transform:      transform,
+	})
 }
 
 func handleAlbumsAssetsAssociationsRemove(ctx context.Context, cmd *cli.Command) error {
