@@ -114,6 +114,7 @@ func handleOAuthAuthURL(ctx context.Context, cmd *cli.Command) error {
 	return ShowJSON(obj, ShowJSONOpts{
 		ExplicitFormat: explicitFormat,
 		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "oauth auth-url",
 		Transform:      transform,
 	})
@@ -154,6 +155,7 @@ func handleOAuthExchange(ctx context.Context, cmd *cli.Command) error {
 	return ShowJSON(obj, ShowJSONOpts{
 		ExplicitFormat: explicitFormat,
 		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "oauth exchange",
 		Transform:      transform,
 	})
@@ -192,6 +194,7 @@ func handleOAuthLogoutEndpoint(ctx context.Context, cmd *cli.Command) error {
 	return ShowJSON(obj, ShowJSONOpts{
 		ExplicitFormat: explicitFormat,
 		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "oauth logout-endpoint",
 		Transform:      transform,
 	})
