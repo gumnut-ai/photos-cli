@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/gumnut-ai/photos-cli/internal/apiquery"
 	"github.com/gumnut-ai/photos-cli/internal/requestflag"
@@ -37,8 +36,8 @@ var searchSearch = cli.Command{
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Usage:     "Number of results per page",
-			Default:   50,
+			Usage:     "Number of results per page (1-200)",
+			Default:   20,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[int64]{
@@ -84,9 +83,10 @@ var searchSearchAssets = cli.Command{
 			BodyPath: "captured_before",
 		},
 		&requestflag.Flag[any]{
-			Name:     "image",
-			Usage:    "Image file to search for similar assets. Can be combined with text query.",
-			BodyPath: "image",
+			Name:      "image",
+			Usage:     "Image file to search for similar assets. Can be combined with text query.",
+			BodyPath:  "image",
+			FileInput: true,
 		},
 		&requestflag.Flag[any]{
 			Name:     "library-id",
@@ -95,8 +95,8 @@ var searchSearchAssets = cli.Command{
 		},
 		&requestflag.Flag[int64]{
 			Name:     "limit",
-			Usage:    "Number of results per page",
-			Default:  50,
+			Usage:    "Number of results per page (1-200)",
+			Default:  20,
 			BodyPath: "limit",
 		},
 		&requestflag.Flag[int64]{
@@ -156,8 +156,15 @@ func handleSearchSearch(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "search search", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "search search",
+		Transform:      transform,
+	})
 }
 
 func handleSearchSearchAssets(ctx context.Context, cmd *cli.Command) error {
@@ -190,6 +197,13 @@ func handleSearchSearchAssets(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "search search-assets", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "search search-assets",
+		Transform:      transform,
+	})
 }

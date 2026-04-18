@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/gumnut-ai/photos-cli/internal/apiquery"
 	"github.com/gumnut-ai/photos-cli/internal/requestflag"
@@ -79,7 +78,8 @@ var facesList = cli.Command{
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Default:   100,
+			Usage:     "Max number of faces to return (1-200)",
+			Default:   20,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[any]{
@@ -89,7 +89,7 @@ var facesList = cli.Command{
 		},
 		&requestflag.Flag[any]{
 			Name:      "starting-after-id",
-			Usage:     "Face ID to start listing faces after",
+			Usage:     "Cursor for pagination. Pass the `id` of the last face from the previous page to get the next page.",
 			QueryPath: "starting_after_id",
 		},
 		&requestflag.Flag[int64]{
@@ -117,25 +117,6 @@ var facesDelete = cli.Command{
 		},
 	},
 	Action:          handleFacesDelete,
-	HideHelpCommand: true,
-}
-
-var facesDownloadThumbnail = cli.Command{
-	Name:    "download-thumbnail",
-	Usage:   "Retrieves a thumbnail for a specific face.",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "face-id",
-			Required: true,
-		},
-		&requestflag.Flag[string]{
-			Name:    "output",
-			Aliases: []string{"o"},
-			Usage:   "The file where the response contents will be stored. Use the value '-' to force output to stdout.",
-		},
-	},
-	Action:          handleFacesDownloadThumbnail,
 	HideHelpCommand: true,
 }
 
@@ -177,8 +158,15 @@ func handleFacesRetrieve(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "faces retrieve", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "faces retrieve",
+		Transform:      transform,
+	})
 }
 
 func handleFacesUpdate(ctx context.Context, cmd *cli.Command) error {
@@ -219,8 +207,15 @@ func handleFacesUpdate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "faces update", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "faces update",
+		Transform:      transform,
+	})
 }
 
 func handleFacesList(ctx context.Context, cmd *cli.Command) error {
@@ -245,6 +240,7 @@ func handleFacesList(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
 	if format == "raw" {
 		var res []byte
@@ -254,14 +250,26 @@ func handleFacesList(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "faces list", obj, format, transform)
+		return ShowJSON(obj, ShowJSONOpts{
+			ExplicitFormat: explicitFormat,
+			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
+			Title:          "faces list",
+			Transform:      transform,
+		})
 	} else {
 		iter := client.Faces.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "faces list", iter, format, transform, maxItems)
+		return ShowJSONIterator(iter, maxItems, ShowJSONOpts{
+			ExplicitFormat: explicitFormat,
+			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
+			Title:          "faces list",
+			Transform:      transform,
+		})
 	}
 }
 
@@ -295,37 +303,4 @@ func handleFacesDelete(ctx context.Context, cmd *cli.Command) error {
 		params,
 		options...,
 	)
-}
-
-func handleFacesDownloadThumbnail(ctx context.Context, cmd *cli.Command) error {
-	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("face-id") && len(unusedArgs) > 0 {
-		cmd.Set("face-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatRepeat,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	response, err := client.Faces.DownloadThumbnail(ctx, cmd.Value("face-id").(string), options...)
-	if err != nil {
-		return err
-	}
-	message, err := writeBinaryResponse(response, cmd.String("output"))
-	if message != "" {
-		fmt.Println(message)
-	}
-	return err
 }

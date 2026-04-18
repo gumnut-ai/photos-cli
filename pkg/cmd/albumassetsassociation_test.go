@@ -8,23 +8,13 @@ import (
 	"github.com/gumnut-ai/photos-cli/internal/mocktest"
 )
 
-func TestAlbumsAssetsAssociationsList(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t, "albums:assets-associations", "list",
-			"--api-key", "string",
-			"--album-id", "album_id",
-		)
-	})
-}
-
 func TestAlbumsAssetsAssociationsAdd(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "albums:assets-associations", "add",
+			t,
 			"--api-key", "string",
+			"albums:assets-associations", "add",
 			"--album-id", "album_id",
 			"--asset-id", "string",
 		)
@@ -36,8 +26,9 @@ func TestAlbumsAssetsAssociationsAdd(t *testing.T) {
 			"asset_ids:\n" +
 			"  - string\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "albums:assets-associations", "add",
+			t, pipeData,
 			"--api-key", "string",
+			"albums:assets-associations", "add",
 			"--album-id", "album_id",
 		)
 	})
@@ -47,8 +38,9 @@ func TestAlbumsAssetsAssociationsRemove(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "albums:assets-associations", "remove",
+			t,
 			"--api-key", "string",
+			"albums:assets-associations", "remove",
 			"--album-id", "album_id",
 			"--asset-id", "string",
 		)
@@ -60,8 +52,9 @@ func TestAlbumsAssetsAssociationsRemove(t *testing.T) {
 			"asset_ids:\n" +
 			"  - string\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "albums:assets-associations", "remove",
+			t, pipeData,
 			"--api-key", "string",
+			"albums:assets-associations", "remove",
 			"--album-id", "album_id",
 		)
 	})

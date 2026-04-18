@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/gumnut-ai/photos-cli/internal/apiquery"
 	"github.com/gumnut-ai/photos-cli/internal/requestflag"
@@ -42,13 +41,13 @@ var albumAssetsList = cli.Command{
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Usage:     "Max number of results to return",
-			Default:   100,
+			Usage:     "Max number of results to return (1-200)",
+			Default:   20,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[any]{
 			Name:      "starting-after-id",
-			Usage:     "Album-asset ID to start listing after",
+			Usage:     "Cursor for pagination. Pass the `id` of the last album-asset from the previous page to get the next page.",
 			QueryPath: "starting_after_id",
 		},
 		&requestflag.Flag[int64]{
@@ -96,6 +95,7 @@ func handleAlbumAssetsList(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
 	if format == "raw" {
 		var res []byte
@@ -105,14 +105,26 @@ func handleAlbumAssetsList(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "album-assets list", obj, format, transform)
+		return ShowJSON(obj, ShowJSONOpts{
+			ExplicitFormat: explicitFormat,
+			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
+			Title:          "album-assets list",
+			Transform:      transform,
+		})
 	} else {
 		iter := client.AlbumAssets.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "album-assets list", iter, format, transform, maxItems)
+		return ShowJSONIterator(iter, maxItems, ShowJSONOpts{
+			ExplicitFormat: explicitFormat,
+			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
+			Title:          "album-assets list",
+			Transform:      transform,
+		})
 	}
 }
 
@@ -147,6 +159,13 @@ func handleAlbumAssetsGet(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "album-assets get", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "album-assets get",
+		Transform:      transform,
+	})
 }

@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/gumnut-ai/photos-cli/internal/apiquery"
 	"github.com/gumnut-ai/photos-cli/internal/requestflag"
@@ -21,9 +20,11 @@ var assetsCreate = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "asset-data",
-			Required: true,
-			BodyPath: "asset_data",
+			Name:      "asset-data",
+			Usage:     "The asset file to upload",
+			Required:  true,
+			BodyPath:  "asset_data",
+			FileInput: true,
 		},
 		&requestflag.Flag[string]{
 			Name:     "device-asset-id",
@@ -91,17 +92,18 @@ var assetsList = cli.Command{
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Default:   100,
+			Usage:     "Max number of assets to return (1-200)",
+			Default:   20,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[any]{
 			Name:      "local-datetime-after",
-			Usage:     "Only include assets with local_datetime after this value (ISO 8601). Naive values compare directly against local_datetime; timezone-aware values are converted to UTC and compared against local_datetime adjusted by its stored offset.",
+			Usage:     "Only include assets with local_datetime after this value (ISO 8601). Naive values compare directly against local_datetime. Timezone-aware values: assets with a known offset are compared in UTC (local_datetime - offset); assets without an offset fall back to wall-clock comparison against local_datetime.",
 			QueryPath: "local_datetime_after",
 		},
 		&requestflag.Flag[any]{
 			Name:      "local-datetime-before",
-			Usage:     "Only include assets with local_datetime before this value (ISO 8601). Naive values compare directly against local_datetime; timezone-aware values are converted to UTC and compared against local_datetime adjusted by its stored offset.",
+			Usage:     "Only include assets with local_datetime before this value (ISO 8601). Naive values compare directly against local_datetime. Timezone-aware values: assets with a known offset are compared in UTC (local_datetime - offset); assets without an offset fall back to wall-clock comparison against local_datetime.",
 			QueryPath: "local_datetime_before",
 		},
 		&requestflag.Flag[any]{
@@ -111,7 +113,7 @@ var assetsList = cli.Command{
 		},
 		&requestflag.Flag[any]{
 			Name:      "starting-after-id",
-			Usage:     "Asset ID to start listing assets after",
+			Usage:     "Cursor for pagination. Pass the `id` of the last asset from the previous page to get the next page.",
 			QueryPath: "starting_after_id",
 		},
 		&requestflag.Flag[int64]{
@@ -195,18 +197,18 @@ var assetsCounts = cli.Command{
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Usage:     "Maximum number of time buckets to return",
-			Default:   100,
+			Usage:     "Maximum number of time buckets to return (1-200)",
+			Default:   20,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[any]{
 			Name:      "local-datetime-after",
-			Usage:     "Only include assets with local_datetime after this value (ISO 8601). Naive values compare directly against local_datetime; timezone-aware values are converted to UTC and compared against local_datetime adjusted by its stored offset.",
+			Usage:     "Only include assets with local_datetime after this value (ISO 8601). Naive values compare directly against local_datetime. Timezone-aware values: assets with a known offset are compared in UTC (local_datetime - offset); assets without an offset fall back to wall-clock comparison against local_datetime.",
 			QueryPath: "local_datetime_after",
 		},
 		&requestflag.Flag[any]{
 			Name:      "local-datetime-before",
-			Usage:     "Only include assets with local_datetime before this value (ISO 8601). Naive values compare directly against local_datetime; timezone-aware values are converted to UTC and compared against local_datetime adjusted by its stored offset. Use the last time_bucket from a previous response to paginate.",
+			Usage:     "Only include assets with local_datetime before this value (ISO 8601). Naive values compare directly against local_datetime. Timezone-aware values: assets with a known offset are compared in UTC (local_datetime - offset); assets without an offset fall back to wall-clock comparison against local_datetime. Use the last time_bucket from a previous response to paginate.",
 			QueryPath: "local_datetime_before",
 		},
 		&requestflag.Flag[any]{
@@ -216,49 +218,6 @@ var assetsCounts = cli.Command{
 		},
 	},
 	Action:          handleAssetsCounts,
-	HideHelpCommand: true,
-}
-
-var assetsDownload = cli.Command{
-	Name:    "download",
-	Usage:   "Downloads the original file for a specific asset.",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "asset-id",
-			Required: true,
-		},
-		&requestflag.Flag[string]{
-			Name:    "output",
-			Aliases: []string{"o"},
-			Usage:   "The file where the response contents will be stored. Use the value '-' to force output to stdout.",
-		},
-	},
-	Action:          handleAssetsDownload,
-	HideHelpCommand: true,
-}
-
-var assetsDownloadThumbnail = cli.Command{
-	Name:    "download-thumbnail",
-	Usage:   "Downloads a thumbnail for a specific asset. The exact thumbnail returned depends\non availability and the optional `size` parameter.",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "asset-id",
-			Required: true,
-		},
-		&requestflag.Flag[any]{
-			Name:      "size",
-			Usage:     "Desired thumbnail size (e.g., thumbnail, preview)",
-			QueryPath: "size",
-		},
-		&requestflag.Flag[string]{
-			Name:    "output",
-			Aliases: []string{"o"},
-			Usage:   "The file where the response contents will be stored. Use the value '-' to force output to stdout.",
-		},
-	},
-	Action:          handleAssetsDownloadThumbnail,
 	HideHelpCommand: true,
 }
 
@@ -292,8 +251,15 @@ func handleAssetsCreate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "assets create", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "assets create",
+		Transform:      transform,
+	})
 }
 
 func handleAssetsRetrieve(ctx context.Context, cmd *cli.Command) error {
@@ -327,8 +293,15 @@ func handleAssetsRetrieve(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "assets retrieve", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "assets retrieve",
+		Transform:      transform,
+	})
 }
 
 func handleAssetsList(ctx context.Context, cmd *cli.Command) error {
@@ -353,6 +326,7 @@ func handleAssetsList(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
 	if format == "raw" {
 		var res []byte
@@ -362,14 +336,26 @@ func handleAssetsList(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "assets list", obj, format, transform)
+		return ShowJSON(obj, ShowJSONOpts{
+			ExplicitFormat: explicitFormat,
+			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
+			Title:          "assets list",
+			Transform:      transform,
+		})
 	} else {
 		iter := client.Assets.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "assets list", iter, format, transform, maxItems)
+		return ShowJSONIterator(iter, maxItems, ShowJSONOpts{
+			ExplicitFormat: explicitFormat,
+			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
+			Title:          "assets list",
+			Transform:      transform,
+		})
 	}
 }
 
@@ -428,8 +414,15 @@ func handleAssetsCheckExistence(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "assets check-existence", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "assets check-existence",
+		Transform:      transform,
+	})
 }
 
 func handleAssetsCounts(ctx context.Context, cmd *cli.Command) error {
@@ -462,79 +455,13 @@ func handleAssetsCounts(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "assets counts", obj, format, transform)
-}
-
-func handleAssetsDownload(ctx context.Context, cmd *cli.Command) error {
-	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("asset-id") && len(unusedArgs) > 0 {
-		cmd.Set("asset-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatRepeat,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	response, err := client.Assets.Download(ctx, cmd.Value("asset-id").(string), options...)
-	if err != nil {
-		return err
-	}
-	message, err := writeBinaryResponse(response, cmd.String("output"))
-	if message != "" {
-		fmt.Println(message)
-	}
-	return err
-}
-
-func handleAssetsDownloadThumbnail(ctx context.Context, cmd *cli.Command) error {
-	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("asset-id") && len(unusedArgs) > 0 {
-		cmd.Set("asset-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	params := photos.AssetDownloadThumbnailParams{}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatRepeat,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	response, err := client.Assets.DownloadThumbnail(
-		ctx,
-		cmd.Value("asset-id").(string),
-		params,
-		options...,
-	)
-	if err != nil {
-		return err
-	}
-	message, err := writeBinaryResponse(response, cmd.String("output"))
-	if message != "" {
-		fmt.Println(message)
-	}
-	return err
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "assets counts",
+		Transform:      transform,
+	})
 }

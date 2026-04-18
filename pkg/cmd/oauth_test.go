@@ -12,8 +12,9 @@ func TestOAuthAuthURL(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "oauth", "auth-url",
+			t,
 			"--api-key", "string",
+			"oauth", "auth-url",
 			"--redirect-uri", "redirect_uri",
 			"--code-challenge", "code_challenge",
 			"--code-challenge-method", "code_challenge_method",
@@ -25,8 +26,9 @@ func TestOAuthExchange(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "oauth", "exchange",
+			t,
 			"--api-key", "string",
+			"oauth", "exchange",
 			"--code", "code",
 			"--code-verifier", "code_verifier",
 			"--error", "error",
@@ -42,8 +44,9 @@ func TestOAuthExchange(t *testing.T) {
 			"error: error\n" +
 			"state: state\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "oauth", "exchange",
+			t, pipeData,
 			"--api-key", "string",
+			"oauth", "exchange",
 		)
 	})
 }
@@ -52,8 +55,9 @@ func TestOAuthLogoutEndpoint(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "oauth", "logout-endpoint",
+			t,
 			"--api-key", "string",
+			"oauth", "logout-endpoint",
 		)
 	})
 }

@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/gumnut-ai/photos-cli/internal/apiquery"
 	"github.com/gumnut-ai/photos-cli/internal/requestflag"
@@ -95,13 +94,13 @@ var albumsList = cli.Command{
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Usage:     "Max number of albums to return",
-			Default:   100,
+			Usage:     "Max number of albums to return (1-200)",
+			Default:   20,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[any]{
 			Name:      "starting-after-id",
-			Usage:     "Album ID to start listing albums after",
+			Usage:     "Cursor for pagination. Pass the `id` of the last album from the previous page to get the next page.",
 			QueryPath: "starting_after_id",
 		},
 		&requestflag.Flag[int64]{
@@ -157,8 +156,15 @@ func handleAlbumsCreate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "albums create", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "albums create",
+		Transform:      transform,
+	})
 }
 
 func handleAlbumsRetrieve(ctx context.Context, cmd *cli.Command) error {
@@ -192,8 +198,15 @@ func handleAlbumsRetrieve(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "albums retrieve", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "albums retrieve",
+		Transform:      transform,
+	})
 }
 
 func handleAlbumsUpdate(ctx context.Context, cmd *cli.Command) error {
@@ -234,8 +247,15 @@ func handleAlbumsUpdate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "albums update", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "albums update",
+		Transform:      transform,
+	})
 }
 
 func handleAlbumsList(ctx context.Context, cmd *cli.Command) error {
@@ -260,6 +280,7 @@ func handleAlbumsList(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
 	if format == "raw" {
 		var res []byte
@@ -269,14 +290,26 @@ func handleAlbumsList(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "albums list", obj, format, transform)
+		return ShowJSON(obj, ShowJSONOpts{
+			ExplicitFormat: explicitFormat,
+			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
+			Title:          "albums list",
+			Transform:      transform,
+		})
 	} else {
 		iter := client.Albums.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "albums list", iter, format, transform, maxItems)
+		return ShowJSONIterator(iter, maxItems, ShowJSONOpts{
+			ExplicitFormat: explicitFormat,
+			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
+			Title:          "albums list",
+			Transform:      transform,
+		})
 	}
 }
 

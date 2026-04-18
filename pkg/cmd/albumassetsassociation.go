@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/gumnut-ai/photos-cli/internal/apiquery"
 	"github.com/gumnut-ai/photos-cli/internal/requestflag"
@@ -14,20 +13,6 @@ import (
 	"github.com/tidwall/gjson"
 	"github.com/urfave/cli/v3"
 )
-
-var albumsAssetsAssociationsList = cli.Command{
-	Name:    "list",
-	Usage:   "Retrieves a list of all assets contained within a specific album, along with\ntheir associated metrics, EXIF data, faces, and people.",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "album-id",
-			Required: true,
-		},
-	},
-	Action:          handleAlbumsAssetsAssociationsList,
-	HideHelpCommand: true,
-}
 
 var albumsAssetsAssociationsAdd = cli.Command{
 	Name:    "add",
@@ -65,41 +50,6 @@ var albumsAssetsAssociationsRemove = cli.Command{
 	},
 	Action:          handleAlbumsAssetsAssociationsRemove,
 	HideHelpCommand: true,
-}
-
-func handleAlbumsAssetsAssociationsList(ctx context.Context, cmd *cli.Command) error {
-	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("album-id") && len(unusedArgs) > 0 {
-		cmd.Set("album-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatRepeat,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Albums.AssetsAssociations.List(ctx, cmd.Value("album-id").(string), options...)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "albums:assets-associations list", obj, format, transform)
 }
 
 func handleAlbumsAssetsAssociationsAdd(ctx context.Context, cmd *cli.Command) error {
@@ -140,8 +90,15 @@ func handleAlbumsAssetsAssociationsAdd(ctx context.Context, cmd *cli.Command) er
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "albums:assets-associations add", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "albums:assets-associations add",
+		Transform:      transform,
+	})
 }
 
 func handleAlbumsAssetsAssociationsRemove(ctx context.Context, cmd *cli.Command) error {

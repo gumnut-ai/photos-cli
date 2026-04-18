@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/gumnut-ai/photos-cli/internal/apiquery"
 	"github.com/gumnut-ai/photos-cli/internal/requestflag"
@@ -101,7 +100,7 @@ var peopleUpdate = cli.Command{
 
 var peopleList = cli.Command{
 	Name:    "list",
-	Usage:   "Retrieves a paginated list of people, ordered by creation time, descending. Can\nbe filtered by specific person IDs.",
+	Usage:   "Retrieves a paginated list of people, ordered by creation time, descending.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[any]{
@@ -126,12 +125,23 @@ var peopleList = cli.Command{
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Default:   100,
+			Usage:     "Max number of people to return (1-200)",
+			Default:   20,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[any]{
+			Name:      "name",
+			Usage:     "Filter by name using case-insensitive substring matching",
+			QueryPath: "name",
+		},
+		&requestflag.Flag[any]{
+			Name:      "name-filter",
+			Usage:     "Filter by name status: 'named' returns only people with a name, 'unnamed' returns only people without a name, 'all' returns everyone. Defaults to 'named', or 'all' when ids are provided.",
+			QueryPath: "name_filter",
+		},
+		&requestflag.Flag[any]{
 			Name:      "starting-after-id",
-			Usage:     "Person ID to start listing people after",
+			Usage:     "Cursor for pagination. Pass the `id` of the last person from the previous page to get the next page.",
 			QueryPath: "starting_after_id",
 		},
 		&requestflag.Flag[int64]{
@@ -145,7 +155,7 @@ var peopleList = cli.Command{
 
 var peopleDelete = cli.Command{
 	Name:    "delete",
-	Usage:   "Deletes a specific person. Associated faces will have their person_id set to the\nclosest matching person, or null if no one matches.",
+	Usage:   "Deletes a specific person. Orphaned faces will be re-clustered in the next\nclustering pass.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -187,8 +197,15 @@ func handlePeopleCreate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "people create", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "people create",
+		Transform:      transform,
+	})
 }
 
 func handlePeopleRetrieve(ctx context.Context, cmd *cli.Command) error {
@@ -222,8 +239,15 @@ func handlePeopleRetrieve(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "people retrieve", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "people retrieve",
+		Transform:      transform,
+	})
 }
 
 func handlePeopleUpdate(ctx context.Context, cmd *cli.Command) error {
@@ -264,8 +288,15 @@ func handlePeopleUpdate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "people update", obj, format, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "people update",
+		Transform:      transform,
+	})
 }
 
 func handlePeopleList(ctx context.Context, cmd *cli.Command) error {
@@ -290,6 +321,7 @@ func handlePeopleList(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
 	if format == "raw" {
 		var res []byte
@@ -299,14 +331,26 @@ func handlePeopleList(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "people list", obj, format, transform)
+		return ShowJSON(obj, ShowJSONOpts{
+			ExplicitFormat: explicitFormat,
+			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
+			Title:          "people list",
+			Transform:      transform,
+		})
 	} else {
 		iter := client.People.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "people list", iter, format, transform, maxItems)
+		return ShowJSONIterator(iter, maxItems, ShowJSONOpts{
+			ExplicitFormat: explicitFormat,
+			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
+			Title:          "people list",
+			Transform:      transform,
+		})
 	}
 }
 

@@ -12,8 +12,9 @@ func TestFacesRetrieve(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "faces", "retrieve",
+			t,
 			"--api-key", "string",
+			"faces", "retrieve",
 			"--face-id", "face_id",
 			"--library-id", "library_id",
 		)
@@ -24,8 +25,9 @@ func TestFacesUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "faces", "update",
+			t,
 			"--api-key", "string",
+			"faces", "update",
 			"--face-id", "face_id",
 			"--library-id", "library_id",
 			"--person-id", "person_id",
@@ -36,8 +38,9 @@ func TestFacesUpdate(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("person_id: person_id")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "faces", "update",
+			t, pipeData,
 			"--api-key", "string",
+			"faces", "update",
 			"--face-id", "face_id",
 			"--library-id", "library_id",
 		)
@@ -48,8 +51,9 @@ func TestFacesList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "faces", "list",
+			t,
 			"--api-key", "string",
+			"faces", "list",
 			"--max-items", "10",
 			"--asset-id", "asset_id",
 			"--id", "[string, string]",
@@ -65,22 +69,11 @@ func TestFacesDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "faces", "delete",
+			t,
 			"--api-key", "string",
+			"faces", "delete",
 			"--face-id", "face_id",
 			"--library-id", "library_id",
-		)
-	})
-}
-
-func TestFacesDownloadThumbnail(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t, "faces", "download-thumbnail",
-			"--api-key", "string",
-			"--face-id", "face_id",
-			"--output", "/dev/null",
 		)
 	})
 }
