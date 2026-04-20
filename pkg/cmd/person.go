@@ -16,33 +16,39 @@ import (
 
 var peopleCreate = cli.Command{
 	Name:    "create",
-	Usage:   "Creates a new person entry.",
+	Usage:   "Creates a new person. Most people are auto-created by face clustering, so this\ntool is typically used only when the user explicitly wants to introduce a new\nidentity before any faces are attached.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[any]{
 			Name:     "birth-date",
+			Usage:    "Optional birth date (ISO 8601 date, YYYY-MM-DD) for this person.",
 			BodyPath: "birth_date",
 		},
 		&requestflag.Flag[any]{
 			Name:     "is-favorite",
+			Usage:    "If true, the person is marked as a favorite. Defaults to false.",
 			Default:  false,
 			BodyPath: "is_favorite",
 		},
 		&requestflag.Flag[any]{
 			Name:     "is-hidden",
+			Usage:    "If true, the person is hidden from default listings. Defaults to false.",
 			Default:  false,
 			BodyPath: "is_hidden",
 		},
 		&requestflag.Flag[any]{
 			Name:     "library-id",
+			Usage:    "Library to create the person in. Optional if the user has a single library; required when they have multiple.",
 			BodyPath: "library_id",
 		},
 		&requestflag.Flag[any]{
 			Name:     "name",
+			Usage:    "Display name for the new person (e.g., 'Alice'). Optional — unnamed people can be named later via `update_person`.",
 			BodyPath: "name",
 		},
 		&requestflag.Flag[any]{
 			Name:     "thumbnail-face-id",
+			Usage:    "ID of the face to use as this person's thumbnail (with `face_` prefix). Typically set after the person has at least one associated face — get face IDs from `list_faces`.",
 			BodyPath: "thumbnail_face_id",
 		},
 	},
@@ -52,11 +58,12 @@ var peopleCreate = cli.Command{
 
 var peopleRetrieve = cli.Command{
 	Name:    "retrieve",
-	Usage:   "Retrieves details for a specific person.",
+	Usage:   "Fetches one person's metadata (name, asset count, thumbnail, etc.). Use this\nwhen you already have a `person_id`. To find photos that contain this person,\nuse `search_assets` with `person_ids` or `list_assets` with `person_id`.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:     "person-id",
+			Usage:    "Person ID (with `person_` prefix) to fetch. Obtain from `list_people`, `get_face.person_id`, or any response containing a person reference.",
 			Required: true,
 		},
 	},
@@ -66,31 +73,37 @@ var peopleRetrieve = cli.Command{
 
 var peopleUpdate = cli.Command{
 	Name:    "update",
-	Usage:   "Updates the details of a specific person.",
+	Usage:   "Updates metadata on an existing person. Only the fields included in the request\nbody are changed. Typical use: assigning a name ('name this face cluster\n\"Alice\"') or choosing a better thumbnail.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:     "person-id",
+			Usage:    "Person ID (with `person_` prefix) of the person to update.",
 			Required: true,
 		},
 		&requestflag.Flag[any]{
 			Name:     "birth-date",
+			Usage:    "New birth date (ISO 8601 date). Omit to leave unchanged.",
 			BodyPath: "birth_date",
 		},
 		&requestflag.Flag[any]{
 			Name:     "is-favorite",
+			Usage:    "Mark or unmark this person as a favorite. Omit to leave unchanged.",
 			BodyPath: "is_favorite",
 		},
 		&requestflag.Flag[any]{
 			Name:     "is-hidden",
+			Usage:    "Hide or unhide this person. Omit to leave unchanged.",
 			BodyPath: "is_hidden",
 		},
 		&requestflag.Flag[any]{
 			Name:     "name",
+			Usage:    "New display name. Omit to leave unchanged.",
 			BodyPath: "name",
 		},
 		&requestflag.Flag[any]{
 			Name:     "thumbnail-face-id",
+			Usage:    "New thumbnail face ID for this person. Omit to leave unchanged. Get face IDs from `list_faces`.",
 			BodyPath: "thumbnail_face_id",
 		},
 	},
@@ -100,48 +113,48 @@ var peopleUpdate = cli.Command{
 
 var peopleList = cli.Command{
 	Name:    "list",
-	Usage:   "Retrieves a paginated list of people, ordered by creation time, descending.",
+	Usage:   "Returns a paginated list of people (named identities that group one or more\nfaces), ordered by creation time (newest first). Use this to enumerate who\nappears in the library, to resolve a user-typed name to a `person_id`, or to\nfind who appears in a specific asset or album.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[any]{
 			Name:      "album-id",
-			Usage:     "Include only people associated with this album ID",
+			Usage:     "Return only people who appear in at least one asset of this album. Useful for 'who is in this album?'.",
 			QueryPath: "album_id",
 		},
 		&requestflag.Flag[any]{
 			Name:      "asset-id",
-			Usage:     "Include only people associated with this asset ID",
+			Usage:     "Return only people who have at least one face in this asset. Useful for 'who is in this photo?'.",
 			QueryPath: "asset_id",
 		},
 		&requestflag.Flag[any]{
 			Name:      "id",
-			Usage:     "Filter by specific person IDs (max 100)",
+			Usage:     "Look up specific people by ID (max 100; each ID has the `person_` prefix). When set, `name_filter` defaults to `all` so unnamed clusters are included in the lookup.",
 			QueryPath: "ids",
 		},
 		&requestflag.Flag[any]{
 			Name:      "library-id",
-			Usage:     "Library ID (required if user has multiple libraries)",
+			Usage:     "Library to list from. Optional if the user has a single library; required when they have multiple.",
 			QueryPath: "library_id",
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Usage:     "Max number of people to return (1-200)",
+			Usage:     "Maximum number of people to return per page (1–200). Defaults to 20.",
 			Default:   20,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[any]{
 			Name:      "name",
-			Usage:     "Filter by name using case-insensitive substring matching",
+			Usage:     "Filter by name using case-insensitive substring matching. Use this to resolve a user-supplied name like 'Alice' into a `person_id`, then pass that ID into `search_assets.person_ids` or `list_assets.person_id`.",
 			QueryPath: "name",
 		},
 		&requestflag.Flag[any]{
 			Name:      "name-filter",
-			Usage:     "Filter by name status: 'named' returns only people with a name, 'unnamed' returns only people without a name, 'all' returns everyone. Defaults to 'named', or 'all' when ids are provided.",
+			Usage:     "Filter by name status: `named` returns only people with a name; `unnamed` returns only nameless face clusters awaiting a name; `all` returns both. Defaults to `named` (or `all` when `ids` is provided).",
 			QueryPath: "name_filter",
 		},
 		&requestflag.Flag[any]{
 			Name:      "starting-after-id",
-			Usage:     "Cursor for pagination. Pass the `id` of the last person from the previous page to get the next page.",
+			Usage:     "Cursor for pagination. Pass the `id` of the last person in the previous response's `data` to fetch the next page. Omit for the first page.",
 			QueryPath: "starting_after_id",
 		},
 		&requestflag.Flag[int64]{
@@ -155,11 +168,12 @@ var peopleList = cli.Command{
 
 var peopleDelete = cli.Command{
 	Name:    "delete",
-	Usage:   "Deletes a specific person. Orphaned faces will be re-clustered in the next\nclustering pass.",
+	Usage:   "Deletes the person. The faces that were attached to this person are not deleted\n— they become unassigned and will be re-clustered on the next clustering pass.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:     "person-id",
+			Usage:    "Person ID (with `person_` prefix) of the person to delete.",
 			Required: true,
 		},
 	},

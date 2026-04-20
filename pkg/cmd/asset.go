@@ -58,11 +58,12 @@ var assetsCreate = cli.Command{
 
 var assetsRetrieve = cli.Command{
 	Name:    "retrieve",
-	Usage:   "Retrieves detailed metadata for a specific asset, including EXIF information,\nasset metrics, faces, and people.",
+	Usage:   "Fetches one asset and its associated metadata. Use this when you already have a\nspecific asset ID (e.g., from `list_assets`, `search_assets`, or\n`list_album_assets`) and need its full details. For bulk fetch of multiple known\nIDs, prefer `list_assets` with the `ids` parameter to avoid N round trips.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:     "asset-id",
+			Usage:    "Asset ID (with `asset_` prefix) to fetch. Obtain from `list_assets`, `search_assets`, or `list_album_assets`.",
 			Required: true,
 		},
 	},
@@ -72,48 +73,48 @@ var assetsRetrieve = cli.Command{
 
 var assetsList = cli.Command{
 	Name:    "list",
-	Usage:   "Retrieves a paginated list of assets from the specified library, optionally\nfiltered by album, person, or specific asset IDs. Asset data includes metrics,\nEXIF data, faces, and people. Assets are ordered by local creation time,\ndescending.",
+	Usage:   "Returns a paginated list of assets ordered by local capture time (newest first).\nUse this tool for structured browsing and filtering — when the request can be\nexpressed as exact filters on album membership, people, date range, or specific\nasset IDs.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[any]{
 			Name:      "album-id",
-			Usage:     "Filter by assets in a specific album",
+			Usage:     "Return only assets that are in the album with this ID. Equivalent to calling `list_album_assets` with `album_id` and then fetching each asset — prefer this param when you need the full asset metadata in one call.",
 			QueryPath: "album_id",
 		},
 		&requestflag.Flag[any]{
 			Name:      "id",
-			Usage:     "Filter by specific asset IDs (max 100)",
+			Usage:     "Look up specific assets by ID (max 100; each ID has the `asset_` prefix). Use this for bulk fetch when you already have asset IDs. Combines with other filters (album_id, person_id, datetime range) using AND logic — the result is the intersection.",
 			QueryPath: "ids",
 		},
 		&requestflag.Flag[any]{
 			Name:      "library-id",
-			Usage:     "Library to list assets from (optional)",
+			Usage:     "Library to list assets from. Optional if the user has a single library; required when they have multiple. Use `list_libraries` to enumerate available libraries.",
 			QueryPath: "library_id",
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Usage:     "Max number of assets to return (1-200)",
+			Usage:     "Maximum number of assets to return per page (1–200). Defaults to 20.",
 			Default:   20,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[any]{
 			Name:      "local-datetime-after",
-			Usage:     "Only include assets with local_datetime after this value (ISO 8601). Naive values compare directly against local_datetime. Timezone-aware values: assets with a known offset are compared in UTC (local_datetime - offset); assets without an offset fall back to wall-clock comparison against local_datetime.",
+			Usage:     "Only include assets captured strictly after this instant (ISO 8601; exclusive). `local_datetime` is the photo's wall-clock time in the device's own timezone. Naive values compare directly against `local_datetime`. Timezone-aware values: assets with a known offset are compared in UTC (`local_datetime - offset`); assets without an offset fall back to wall-clock comparison against `local_datetime`. Equivalent in purpose to `captured_after` on `search_assets` (naming inconsistency is tracked as a follow-up).",
 			QueryPath: "local_datetime_after",
 		},
 		&requestflag.Flag[any]{
 			Name:      "local-datetime-before",
-			Usage:     "Only include assets with local_datetime before this value (ISO 8601). Naive values compare directly against local_datetime. Timezone-aware values: assets with a known offset are compared in UTC (local_datetime - offset); assets without an offset fall back to wall-clock comparison against local_datetime.",
+			Usage:     "Only include assets captured strictly before this instant (ISO 8601; exclusive). Same awareness/offset semantics as `local_datetime_after`. Equivalent in purpose to `captured_before` on `search_assets` (naming inconsistency is tracked as a follow-up).",
 			QueryPath: "local_datetime_before",
 		},
 		&requestflag.Flag[any]{
 			Name:      "person-id",
-			Usage:     "Filter by assets associated with a specific person ID",
+			Usage:     "Return only assets containing a face belonging to this person. Singular on this tool; the sibling `search_assets` uses `person_ids` (plural, ALL-of).",
 			QueryPath: "person_id",
 		},
 		&requestflag.Flag[any]{
 			Name:      "starting-after-id",
-			Usage:     "Cursor for pagination. Pass the `id` of the last asset from the previous page to get the next page.",
+			Usage:     "Cursor for pagination. Pass the `id` of the last asset in the previous response's `data` to fetch the next page. Omit for the first page. `list_assets` uses cursor pagination; the sibling `search_assets` uses 1-indexed `page` numbers (naming inconsistency is tracked as a follow-up).",
 			QueryPath: "starting_after_id",
 		},
 		&requestflag.Flag[int64]{
@@ -127,11 +128,12 @@ var assetsList = cli.Command{
 
 var assetsDelete = cli.Command{
 	Name:    "delete",
-	Usage:   "Deletes a specific asset and its associated data (including the file from\nstorage).",
+	Usage:   "Deletes the asset entirely — the database record, the stored file, and all\nassociated data (faces, album links, etc.). This is irreversible.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:     "asset-id",
+			Usage:    "Asset ID (with `asset_` prefix) of the asset to permanently delete.",
 			Required: true,
 		},
 	},

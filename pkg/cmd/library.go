@@ -16,16 +16,18 @@ import (
 
 var librariesCreate = cli.Command{
 	Name:    "create",
-	Usage:   "Creates a new library for the authenticated user.",
+	Usage:   "Creates a new, empty library. A library is the top-level container for assets,\nalbums, people, and faces — most users have exactly one. Only create a new\nlibrary when the user explicitly asks for a separate container.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:     "name",
+			Usage:    "Display name for the new library. Required.",
 			Required: true,
 			BodyPath: "name",
 		},
 		&requestflag.Flag[any]{
 			Name:     "description",
+			Usage:    "Optional free-form description shown alongside the library name.",
 			BodyPath: "description",
 		},
 	},
@@ -35,11 +37,12 @@ var librariesCreate = cli.Command{
 
 var librariesRetrieve = cli.Command{
 	Name:    "retrieve",
-	Usage:   "Returns details of a specific library owned by the authenticated user.",
+	Usage:   "Fetches one library's metadata (name, description, asset count). Use when you\nalready have a specific `library_id`; for enumerating a user's libraries prefer\n`list_libraries`.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:     "library-id",
+			Usage:    "Library ID (with `lib_` prefix) to fetch. Obtain from `list_libraries` or any response containing a library reference.",
 			Required: true,
 		},
 	},
@@ -49,19 +52,22 @@ var librariesRetrieve = cli.Command{
 
 var librariesUpdate = cli.Command{
 	Name:    "update",
-	Usage:   "Updates the name and/or description of a library owned by the authenticated\nuser.",
+	Usage:   "Updates the `name` and/or `description` of an existing library. Only the fields\nincluded in the request body are changed. Library contents (assets, albums,\npeople, faces) are not affected.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:     "library-id",
+			Usage:    "Library ID (with `lib_` prefix) of the library to update.",
 			Required: true,
 		},
 		&requestflag.Flag[any]{
 			Name:     "description",
+			Usage:    "New free-form description for the library. Omit to leave unchanged.",
 			BodyPath: "description",
 		},
 		&requestflag.Flag[any]{
 			Name:     "name",
+			Usage:    "New display name for the library. Omit to leave unchanged.",
 			BodyPath: "name",
 		},
 	},
@@ -71,7 +77,7 @@ var librariesUpdate = cli.Command{
 
 var librariesList = cli.Command{
 	Name:            "list",
-	Usage:           "Returns all libraries owned by the authenticated user.",
+	Usage:           "Returns every library the user owns (no pagination — users typically have one or\na handful). Call this when another tool's `library_id` parameter is required but\nyou don't yet know which libraries exist. A single-library user can usually omit\n`library_id` on other tools entirely.",
 	Suggest:         true,
 	Flags:           []cli.Flag{},
 	Action:          handleLibrariesList,
@@ -80,11 +86,12 @@ var librariesList = cli.Command{
 
 var librariesDelete = cli.Command{
 	Name:    "delete",
-	Usage:   "Deletes a library and all its associated data (assets, albums, people, faces).\nCannot delete the user's only library.",
+	Usage:   "Deletes the library and all its associated database records — assets, albums,\npeople, and faces — via cascading foreign-key delete. This is irreversible and\nshould be used only when the user explicitly confirms they want to destroy an\nentire library.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:     "library-id",
+			Usage:    "Library ID (with `lib_` prefix) of the library to delete.",
 			Required: true,
 		},
 	},

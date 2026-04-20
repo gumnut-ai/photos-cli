@@ -15,7 +15,7 @@ import (
 
 var usersMe = cli.Command{
 	Name:            "me",
-	Usage:           "Returns information about the authenticated user making the request.",
+	Usage:           "Returns the authenticated caller's profile. Use this at the start of a session\nto ground subsequent calls (e.g., to confirm the caller's identity before making\ndestructive changes). This tool does not accept a user ID; it always returns the\nauthenticated caller.",
 	Suggest:         true,
 	Flags:           []cli.Flag{},
 	Action:          handleUsersMe,
