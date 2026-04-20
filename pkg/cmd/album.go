@@ -16,19 +16,22 @@ import (
 
 var albumsCreate = cli.Command{
 	Name:    "create",
-	Usage:   "Creates a new, empty album with optional name and description in the specified\nlibrary.",
+	Usage:   "Creates an album (with optional name and description) and returns it. The album\nstarts empty — follow up with `add_assets_to_album` to populate it. To rename an\nexisting album, use `update_album` instead of creating a new one.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[any]{
 			Name:     "description",
+			Usage:    "Optional free-form description shown alongside the album name.",
 			BodyPath: "description",
 		},
 		&requestflag.Flag[any]{
 			Name:     "library-id",
+			Usage:    "Library to create the album in. Optional if the user has a single library; required when they have multiple. Use `list_libraries` to enumerate.",
 			BodyPath: "library_id",
 		},
 		&requestflag.Flag[any]{
 			Name:     "name",
+			Usage:    "Display name for the new album. Optional; callers that need to name an album can set it here or via `update_album` after creation.",
 			BodyPath: "name",
 		},
 	},
@@ -38,11 +41,12 @@ var albumsCreate = cli.Command{
 
 var albumsRetrieve = cli.Command{
 	Name:    "retrieve",
-	Usage:   "Retrieves details for a specific album.",
+	Usage:   "Fetches one album's metadata (name, description, cover, counts). Use when you\nalready have an album ID. Does not include the album's assets — use\n`list_album_assets` or `list_assets` with `album_id` for that.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:     "album-id",
+			Usage:    "Album ID (with `album_` prefix) to fetch. Obtain from `list_albums` (optionally filtered by `asset_id` to find albums containing a specific asset), `list_album_assets`, or any response containing an album reference.",
 			Required: true,
 		},
 	},
@@ -52,19 +56,22 @@ var albumsRetrieve = cli.Command{
 
 var albumsUpdate = cli.Command{
 	Name:    "update",
-	Usage:   "Updates the name and/or description of a specific album.",
+	Usage:   "Updates the `name` and/or `description` of an existing album. Only the fields\nincluded in the request body are changed. To modify the contents of an album,\nuse `add_assets_to_album` / `remove_assets_from_album` instead — this tool only\nchanges album metadata.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:     "album-id",
+			Usage:    "Album ID (with `album_` prefix) of the album to rename or re-describe.",
 			Required: true,
 		},
 		&requestflag.Flag[any]{
 			Name:     "description",
+			Usage:    "New free-form description for the album. Omit to leave unchanged.",
 			BodyPath: "description",
 		},
 		&requestflag.Flag[any]{
 			Name:     "name",
+			Usage:    "New display name for the album. Omit to leave unchanged.",
 			BodyPath: "name",
 		},
 	},
@@ -74,33 +81,33 @@ var albumsUpdate = cli.Command{
 
 var albumsList = cli.Command{
 	Name:    "list",
-	Usage:   "Retrieves a paginated list of albums from the specified library, ordered by\ncreation time, descending. Can be filtered by asset_id or specific album IDs.",
+	Usage:   "Returns a paginated list of albums ordered by creation time (newest first). Use\nthis to enumerate a user's albums or to find which albums contain a specific\nasset (via `asset_id`).",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[any]{
 			Name:      "asset-id",
-			Usage:     "Filter albums containing this asset ID (optional)",
+			Usage:     "Return only albums that contain this asset. Useful for answering 'which albums is this photo in?' without calling `list_album_assets`.",
 			QueryPath: "asset_id",
 		},
 		&requestflag.Flag[any]{
 			Name:      "id",
-			Usage:     "Filter by specific album IDs (max 100)",
+			Usage:     "Look up specific albums by ID (max 100; each ID has the `album_` prefix). Use for bulk fetch when IDs are already known.",
 			QueryPath: "ids",
 		},
 		&requestflag.Flag[any]{
 			Name:      "library-id",
-			Usage:     "Library to list albums from (optional)",
+			Usage:     "Library to list albums from. Optional if the user has a single library; required when they have multiple. Use `list_libraries` to enumerate.",
 			QueryPath: "library_id",
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Usage:     "Max number of albums to return (1-200)",
+			Usage:     "Maximum number of albums to return per page (1–200). Defaults to 20.",
 			Default:   20,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[any]{
 			Name:      "starting-after-id",
-			Usage:     "Cursor for pagination. Pass the `id` of the last album from the previous page to get the next page.",
+			Usage:     "Cursor for pagination. Pass the `id` of the last album in the previous response's `data` to fetch the next page. Omit for the first page.",
 			QueryPath: "starting_after_id",
 		},
 		&requestflag.Flag[int64]{
@@ -114,11 +121,12 @@ var albumsList = cli.Command{
 
 var albumsDelete = cli.Command{
 	Name:    "delete",
-	Usage:   "Deletes a specific album. Note: This does not delete the assets within the\nalbum.",
+	Usage:   "Deletes the album itself. Assets that were in the album remain in the library —\nonly the album and its asset-links are removed. Use `delete_asset` to delete the\nunderlying assets, or `remove_assets_from_album` to detach specific assets from\nan album you want to keep.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:     "album-id",
+			Usage:    "Album ID (with `album_` prefix) of the album to delete.",
 			Required: true,
 		},
 	},

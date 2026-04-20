@@ -16,49 +16,49 @@ import (
 
 var searchSearch = cli.Command{
 	Name:    "search",
-	Usage:   "Searches for assets using semantic similarity and/or metadata filters. Results\ninclude asset metadata, faces, and people. At least one search criterion must be\nprovided.",
+	Usage:   "Searches for assets using semantic (CLIP-based) image-content matching and/or\nstructured filters. Use this tool when the user describes _what's in_ the photos\nthey want — subjects, scenes, places, activities, moods, objects — as opposed to\nbrowsing by album membership or exact ID.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[any]{
 			Name:      "captured-after",
-			Usage:     "Filter to only include assets captured after this date (ISO format).",
+			Usage:     "Only include assets captured strictly after this instant (ISO 8601; exclusive). Equivalent in purpose to `local_datetime_after` on `list_assets` (naming inconsistency is tracked as a follow-up).",
 			QueryPath: "captured_after",
 		},
 		&requestflag.Flag[any]{
 			Name:      "captured-before",
-			Usage:     "Filter to only include assets captured before this date (ISO format).",
+			Usage:     "Only include assets captured strictly before this instant (ISO 8601; exclusive). Equivalent in purpose to `local_datetime_before` on `list_assets` (naming inconsistency is tracked as a follow-up).",
 			QueryPath: "captured_before",
 		},
 		&requestflag.Flag[any]{
 			Name:      "library-id",
-			Usage:     "Library to search assets from (optional)",
+			Usage:     "Library to search. Optional if the user has a single library; required when they have multiple. Use `list_libraries` to enumerate available libraries.",
 			QueryPath: "library_id",
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Usage:     "Number of results per page (1-200)",
+			Usage:     "Maximum number of results per page (1–200). Defaults to 20.",
 			Default:   20,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[int64]{
 			Name:      "page",
-			Usage:     "Page number",
+			Usage:     "1-indexed page number. `search_assets` uses page-number pagination; the sibling `list_assets` uses cursor pagination via `starting_after_id`. Increment `page` to fetch subsequent pages.",
 			Default:   1,
 			QueryPath: "page",
 		},
 		&requestflag.Flag[any]{
 			Name:      "person-id",
-			Usage:     "Filter to only include assets containing ALL of these person IDs. Can be comma-delimited string (e.g. 'person_123,person_abc') or multiple query parameters.",
+			Usage:     "Filter to assets containing ALL of these person IDs (intersection, not union). Accepts multiple `person_ids=` query params or a single comma-delimited value (e.g., `person_123,person_abc`). Get person IDs from `list_people`. Plural on this tool; the sibling `list_assets` uses `person_id` (singular).",
 			QueryPath: "person_ids",
 		},
 		&requestflag.Flag[any]{
 			Name:      "query",
-			Usage:     "The text query to search for. If you want to search for a specific person or set of people, use the person_ids parameter instead.If you want to search for a photos taken during a specific date range, use the captured_before and captured_after parameters instead.",
+			Usage:     "Natural-language description of the image content to search for. Matched against CLIP image embeddings, so it works best with concrete visual concepts: subjects, scenes, objects, settings ('beach sunset', 'birthday cake', 'mountain hike').\n\nPrefer structured params when available: use `person_ids` for people (not names in `query`) and `captured_before`/`captured_after` for dates (not phrases like 'in 2023' in `query`).",
 			QueryPath: "query",
 		},
 		&requestflag.Flag[float64]{
 			Name:      "threshold",
-			Usage:     "Similarity threshold (lower means more similar)",
+			Usage:     "Maximum semantic distance for a result to be included (0.0 = identical, 1.0 = unrelated). Lower values return fewer, more confident matches; higher values return more results with looser matching. Default 0.8 is moderate — try 0.6 for high-precision queries, 0.9 for exploratory searches. **Note:** this is inverted from the usual 'similarity score' convention where higher means more similar.",
 			Default:   0.8,
 			QueryPath: "threshold",
 		},
