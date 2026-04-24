@@ -36,7 +36,7 @@ var eventsGet = cli.Command{
 		},
 		&requestflag.Flag[any]{
 			Name:      "entity-types",
-			Usage:     "Comma-separated list of entity types to include (e.g., `asset,album`). Valid values: `asset`, `album`, `person`, `face`, `album_asset`, `exif`. Omit to receive events for all types.",
+			Usage:     "Comma-separated list of entity types to include (e.g., `asset,album`). Valid values: `asset`, `album`, `person`, `face`, `album_asset`, `exif`, `metadata`. Omit to receive events for all types.",
 			QueryPath: "entity_types",
 		},
 		&requestflag.Flag[any]{
