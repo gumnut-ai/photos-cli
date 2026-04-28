@@ -117,3 +117,29 @@ func TestPeopleDelete(t *testing.T) {
 		)
 	})
 }
+
+func TestPeopleMerge(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"people", "merge",
+			"--person-id", "person_id",
+			"--source-person-id", "string",
+		)
+	})
+
+	t.Run("piping data", func(t *testing.T) {
+		// Test piping YAML data over stdin
+		pipeData := []byte("" +
+			"source_person_ids:\n" +
+			"  - string\n")
+		mocktest.TestRunMockTestWithPipeAndFlags(
+			t, pipeData,
+			"--api-key", "string",
+			"people", "merge",
+			"--person-id", "person_id",
+		)
+	})
+}
