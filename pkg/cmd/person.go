@@ -181,6 +181,26 @@ var peopleDelete = cli.Command{
 	HideHelpCommand: true,
 }
 
+var peopleMerge = cli.Command{
+	Name:    "merge",
+	Usage:   "Merges one or more source people into the primary person identified by the URL.\nAll faces from source people are reassigned to the primary person. Source people\nare permanently deleted (this cannot be undone). The primary person's centroid\nembedding is recalculated.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "person-id",
+			Required: true,
+		},
+		&requestflag.Flag[[]string]{
+			Name:     "source-person-id",
+			Usage:    "IDs of the people to merge into the primary person. These people will be deleted after their faces are moved.",
+			Required: true,
+			BodyPath: "source_person_ids",
+		},
+	},
+	Action:          handlePeopleMerge,
+	HideHelpCommand: true,
+}
+
 func handlePeopleCreate(ctx context.Context, cmd *cli.Command) error {
 	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -391,4 +411,53 @@ func handlePeopleDelete(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	return client.People.Delete(ctx, cmd.Value("person-id").(string), options...)
+}
+
+func handlePeopleMerge(ctx context.Context, cmd *cli.Command) error {
+	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("person-id") && len(unusedArgs) > 0 {
+		cmd.Set("person-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	params := photos.PersonMergeParams{}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatRepeat,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.People.Merge(
+		ctx,
+		cmd.Value("person-id").(string),
+		params,
+		options...,
+	)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "people merge",
+		Transform:      transform,
+	})
 }

@@ -189,6 +189,7 @@ func init() {
 					&peopleUpdate,
 					&peopleList,
 					&peopleDelete,
+					&peopleMerge,
 				},
 			},
 			{
