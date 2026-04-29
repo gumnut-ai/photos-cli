@@ -73,6 +73,7 @@ func TestAssetsList(t *testing.T) {
 			"--local-datetime-before", "'2019-12-27T18:11:19.117Z'",
 			"--person-id", "person_id",
 			"--starting-after-id", "starting_after_id",
+			"--state", "live",
 		)
 	})
 }
@@ -137,6 +138,7 @@ func TestAssetsCounts(t *testing.T) {
 			"--local-datetime-after", "'2019-12-27T18:11:19.117Z'",
 			"--local-datetime-before", "'2019-12-27T18:11:19.117Z'",
 			"--person-id", "person_id",
+			"--state", "live",
 		)
 	})
 }

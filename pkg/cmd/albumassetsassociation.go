@@ -37,7 +37,7 @@ var albumsAssetsAssociationsAdd = cli.Command{
 
 var albumsAssetsAssociationsRemove = cli.Command{
 	Name:    "remove",
-	Usage:   "Detaches one or more assets from the given album. The assets remain in the\nlibrary and in any other albums they belong to. Use `delete_asset` to delete the\nasset entirely. To empty an album completely, call `list_album_assets` to get\nthe links and then remove them, or delete the album itself with `delete_album`.",
+	Usage:   "Detaches one or more assets from the given album. The assets remain in the\nlibrary and in any other albums they belong to. Use `trash_assets` (or\n`permanently_delete_assets` for irreversible removal) to delete the asset\nentirely. To empty an album completely, call `list_album_assets` to get the\nlinks and then remove them, or delete the album itself with `delete_album`.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
