@@ -117,6 +117,12 @@ var assetsList = cli.Command{
 			Usage:     "Cursor for pagination. Pass the `id` of the last asset in the previous response's `data` to fetch the next page. Omit for the first page. `list_assets` uses cursor pagination; the sibling `search_assets` uses 1-indexed `page` numbers (naming inconsistency is tracked as a follow-up).",
 			QueryPath: "starting_after_id",
 		},
+		&requestflag.Flag[string]{
+			Name:      "state",
+			Usage:     "Which set of assets to read from: `live` (default — only assets that are not trashed), `trashed` (only trashed assets, ordered by most recently trashed), or `all` (both live and trashed, ordered by capture time like `live`).",
+			Default:   "live",
+			QueryPath: "state",
+		},
 		&requestflag.Flag[int64]{
 			Name:  "max-items",
 			Usage: "The maximum number of items to return (use -1 for unlimited).",
@@ -128,7 +134,7 @@ var assetsList = cli.Command{
 
 var assetsDelete = cli.Command{
 	Name:    "delete",
-	Usage:   "Deletes the asset entirely — the database record, the stored file, and all\nassociated data (faces, album links, etc.). This is irreversible.",
+	Usage:   "Deletes the asset entirely — the database record, the stored file, and all\nassociated data (faces, album links, etc.). **Irreversible.** Prefer\n`trash_assets` for the user's standard delete action so accidents can be\nrecovered.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -217,6 +223,12 @@ var assetsCounts = cli.Command{
 			Name:      "person-id",
 			Usage:     "Filter by assets associated with a specific person ID",
 			QueryPath: "person_id",
+		},
+		&requestflag.Flag[string]{
+			Name:      "state",
+			Usage:     "Which set of assets to count: `live` (default — excludes trashed assets), `trashed` (only trashed assets), or `all` (both live and trashed).",
+			Default:   "live",
+			QueryPath: "state",
 		},
 	},
 	Action:          handleAssetsCounts,

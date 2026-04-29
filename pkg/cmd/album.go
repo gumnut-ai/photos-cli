@@ -121,7 +121,7 @@ var albumsList = cli.Command{
 
 var albumsDelete = cli.Command{
 	Name:    "delete",
-	Usage:   "Deletes the album itself. Assets that were in the album remain in the library —\nonly the album and its asset-links are removed. Use `delete_asset` to delete the\nunderlying assets, or `remove_assets_from_album` to detach specific assets from\nan album you want to keep.",
+	Usage:   "Deletes the album itself. Assets that were in the album remain in the library —\nonly the album and its asset-links are removed. Use `trash_assets` (or\n`permanently_delete_assets` for irreversible removal) to delete the underlying\nassets, or `remove_assets_from_album` to detach specific assets from an album\nyou want to keep.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
