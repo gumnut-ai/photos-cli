@@ -46,7 +46,7 @@ var assetsCreate = cli.Command{
 			Required: true,
 			BodyPath: "file_modified_at",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "library-id",
 			Usage:    "Library to upload asset to (optional)",
 			BodyPath: "library_id",
@@ -76,7 +76,7 @@ var assetsList = cli.Command{
 	Usage:   "Returns a paginated list of assets ordered by local capture time (newest first).\nUse this tool for structured browsing and filtering — when the request can be\nexpressed as exact filters on album membership, people, date range, or specific\nasset IDs.",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "album-id",
 			Usage:     "Return only assets that are in the album with this ID. Equivalent to calling `list_album_assets` with `album_id` and then fetching each asset — prefer this param when you need the full asset metadata in one call.",
 			QueryPath: "album_id",
@@ -86,7 +86,7 @@ var assetsList = cli.Command{
 			Usage:     "Look up specific assets by ID (max 100; each ID has the `asset_` prefix). Use this for bulk fetch when you already have asset IDs. Combines with other filters (album_id, person_id, datetime range) using AND logic — the result is the intersection.",
 			QueryPath: "ids",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "library-id",
 			Usage:     "Library to list assets from. Optional if the user has a single library; required when they have multiple. Use `list_libraries` to enumerate available libraries.",
 			QueryPath: "library_id",
@@ -107,12 +107,12 @@ var assetsList = cli.Command{
 			Usage:     "Only include assets captured strictly before this instant (ISO 8601; exclusive). Same awareness/offset semantics as `local_datetime_after`. Equivalent in purpose to `captured_before` on `search_assets` (naming inconsistency is tracked as a follow-up).",
 			QueryPath: "local_datetime_before",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "person-id",
 			Usage:     "Return only assets containing a face belonging to this person. Singular on this tool; the sibling `search_assets` uses `person_ids` (plural, ALL-of).",
 			QueryPath: "person_id",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "starting-after-id",
 			Usage:     "Cursor for pagination. Pass the `id` of the last asset in the previous response's `data` to fetch the next page. Omit for the first page. `list_assets` uses cursor pagination; the sibling `search_assets` uses 1-indexed `page` numbers (naming inconsistency is tracked as a follow-up).",
 			QueryPath: "starting_after_id",
@@ -152,7 +152,7 @@ var assetsCheckExistence = cli.Command{
 	Usage:   "Checks which assets exist in the user's library based on checksums or device\nidentifiers. Provide exactly one of: checksums, checksum_sha1s, or (deviceId AND\ndeviceAssetIds). List parameters are limited to 5000 items.",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "library-id",
 			Usage:     "Library to check assets in (optional)",
 			QueryPath: "library_id",
@@ -172,7 +172,7 @@ var assetsCheckExistence = cli.Command{
 			Usage:    "List of device asset IDs to check for existence (requires deviceId)",
 			BodyPath: "deviceAssetIds",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "device-id",
 			Usage:    "Device ID to filter assets by (required with deviceAssetIds)",
 			BodyPath: "deviceId",
@@ -187,7 +187,7 @@ var assetsCounts = cli.Command{
 	Usage:   "Returns asset counts grouped by time period. Supports optional filtering by\nalbum, person, or date range. Results are ordered by time bucket descending.",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "album-id",
 			Usage:     "Filter by assets in a specific album",
 			QueryPath: "album_id",
@@ -198,7 +198,7 @@ var assetsCounts = cli.Command{
 			Default:   "month",
 			QueryPath: "group_by",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "library-id",
 			Usage:     "Library to count assets in (optional)",
 			QueryPath: "library_id",
@@ -219,7 +219,7 @@ var assetsCounts = cli.Command{
 			Usage:     "Only include assets with local_datetime before this value (ISO 8601). Naive values compare directly against local_datetime. Timezone-aware values: assets with a known offset are compared in UTC (local_datetime - offset); assets without an offset fall back to wall-clock comparison against local_datetime. Use the last time_bucket from a previous response to paginate.",
 			QueryPath: "local_datetime_before",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "person-id",
 			Usage:     "Filter by assets associated with a specific person ID",
 			QueryPath: "person_id",

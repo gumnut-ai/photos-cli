@@ -25,7 +25,7 @@ var librariesCreate = cli.Command{
 			Required: true,
 			BodyPath: "name",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "description",
 			Usage:    "Optional free-form description shown alongside the library name.",
 			BodyPath: "description",
@@ -60,12 +60,12 @@ var librariesUpdate = cli.Command{
 			Usage:    "Library ID (with `lib_` prefix) of the library to update.",
 			Required: true,
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "description",
 			Usage:    "New free-form description for the library. Omit to leave unchanged.",
 			BodyPath: "description",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "name",
 			Usage:    "New display name for the library. Omit to leave unchanged.",
 			BodyPath: "name",

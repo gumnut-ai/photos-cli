@@ -25,12 +25,12 @@ var oauthAuthURL = cli.Command{
 			Required:  true,
 			QueryPath: "redirect_uri",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "code-challenge",
 			Usage:     "PKCE code challenge derived from code_verifier. Required for public clients to prevent authorization code interception attacks.",
 			QueryPath: "code_challenge",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "code-challenge-method",
 			Usage:     "PKCE code challenge method, typically 'S256' (SHA-256 hash). Must be provided if code_challenge is specified.",
 			QueryPath: "code_challenge_method",
@@ -45,22 +45,22 @@ var oauthExchange = cli.Command{
 	Usage:   "Exchange OAuth authorization code for application JWT after validating state,\nnonce, and ID token signature. User is retrieved from or created in the database\nand details added to the JWT.",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "code",
 			Usage:    "Authorization code returned by the OAuth provider after user consent",
 			BodyPath: "code",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "code-verifier",
 			Usage:    "PKCE code verifier that corresponds to the code_challenge sent in the authorization request",
 			BodyPath: "code_verifier",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "error",
 			Usage:    "Error code if OAuth provider returned an error instead of authorization code",
 			BodyPath: "error",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "state",
 			Usage:    "State token from the initial auth request, used for CSRF protection",
 			BodyPath: "state",
