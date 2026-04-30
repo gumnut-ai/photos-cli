@@ -19,17 +19,17 @@ var albumsCreate = cli.Command{
 	Usage:   "Creates an album (with optional name and description) and returns it. The album\nstarts empty — follow up with `add_assets_to_album` to populate it. To rename an\nexisting album, use `update_album` instead of creating a new one.",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "description",
 			Usage:    "Optional free-form description shown alongside the album name.",
 			BodyPath: "description",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "library-id",
 			Usage:    "Library to create the album in. Optional if the user has a single library; required when they have multiple. Use `list_libraries` to enumerate.",
 			BodyPath: "library_id",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "name",
 			Usage:    "Display name for the new album. Optional; callers that need to name an album can set it here or via `update_album` after creation.",
 			BodyPath: "name",
@@ -64,12 +64,12 @@ var albumsUpdate = cli.Command{
 			Usage:    "Album ID (with `album_` prefix) of the album to rename or re-describe.",
 			Required: true,
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "description",
 			Usage:    "New free-form description for the album. Omit to leave unchanged.",
 			BodyPath: "description",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "name",
 			Usage:    "New display name for the album. Omit to leave unchanged.",
 			BodyPath: "name",
@@ -84,7 +84,7 @@ var albumsList = cli.Command{
 	Usage:   "Returns a paginated list of albums ordered by creation time (newest first). Use\nthis to enumerate a user's albums or to find which albums contain a specific\nasset (via `asset_id`).",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "asset-id",
 			Usage:     "Return only albums that contain this asset. Useful for answering 'which albums is this photo in?' without calling `list_album_assets`.",
 			QueryPath: "asset_id",
@@ -94,7 +94,7 @@ var albumsList = cli.Command{
 			Usage:     "Look up specific albums by ID (max 100; each ID has the `album_` prefix). Use for bulk fetch when IDs are already known.",
 			QueryPath: "ids",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "library-id",
 			Usage:     "Library to list albums from. Optional if the user has a single library; required when they have multiple. Use `list_libraries` to enumerate.",
 			QueryPath: "library_id",
@@ -105,7 +105,7 @@ var albumsList = cli.Command{
 			Default:   20,
 			QueryPath: "limit",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "starting-after-id",
 			Usage:     "Cursor for pagination. Pass the `id` of the last album in the previous response's `data` to fetch the next page. Omit for the first page.",
 			QueryPath: "starting_after_id",

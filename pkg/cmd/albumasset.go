@@ -19,12 +19,12 @@ var albumAssetsList = cli.Command{
 	Usage:   "Returns paginated _link_ records describing which assets are in which albums —\neach row contains `album_id` + `asset_id` + link timestamps, not the full asset\nor album metadata. Use this when you specifically need the junction records (for\nsync or change tracking).",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "album-id",
 			Usage:     "Return only link records for this album ID. Equivalent to 'list the assets in this album' — in most cases prefer `list_assets` with `album_id` to get the asset metadata directly instead of the lightweight link records.",
 			QueryPath: "album_id",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "asset-id",
 			Usage:     "Return only link records for this asset ID. Equivalent to 'which albums contain this asset' — in most cases prefer `list_albums` with `asset_id` to get the album metadata directly.",
 			QueryPath: "asset_id",
@@ -34,7 +34,7 @@ var albumAssetsList = cli.Command{
 			Usage:     "Look up specific album-asset link records by ID (max 100). The ID has the `album_asset_` prefix.",
 			QueryPath: "ids",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "library-id",
 			Usage:     "Library to list from. Optional if the user has a single library; required when they have multiple.",
 			QueryPath: "library_id",
@@ -45,7 +45,7 @@ var albumAssetsList = cli.Command{
 			Default:   20,
 			QueryPath: "limit",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "starting-after-id",
 			Usage:     "Cursor for pagination. Pass the `id` of the last album-asset in the previous response's `data` to fetch the next page. Omit for the first page.",
 			QueryPath: "starting_after_id",

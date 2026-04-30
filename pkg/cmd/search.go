@@ -29,7 +29,7 @@ var searchSearch = cli.Command{
 			Usage:     "Only include assets captured strictly before this instant (ISO 8601; exclusive). Equivalent in purpose to `local_datetime_before` on `list_assets` (naming inconsistency is tracked as a follow-up).",
 			QueryPath: "captured_before",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "library-id",
 			Usage:     "Library to search. Optional if the user has a single library; required when they have multiple. Use `list_libraries` to enumerate available libraries.",
 			QueryPath: "library_id",
@@ -51,7 +51,7 @@ var searchSearch = cli.Command{
 			Usage:     "Filter to assets containing ALL of these person IDs (intersection, not union). Accepts multiple `person_ids=` query params or a single comma-delimited value (e.g., `person_123,person_abc`). Get person IDs from `list_people`. Plural on this tool; the sibling `list_assets` uses `person_id` (singular).",
 			QueryPath: "person_ids",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "query",
 			Usage:     "Natural-language description of the image content to search for. Matched against CLIP image embeddings, so it works best with concrete visual concepts: subjects, scenes, objects, settings ('beach sunset', 'birthday cake', 'mountain hike').\n\nPrefer structured params when available: use `person_ids` for people (not names in `query`) and `captured_before`/`captured_after` for dates (not phrases like 'in 2023' in `query`).",
 			QueryPath: "query",
@@ -82,13 +82,13 @@ var searchSearchAssets = cli.Command{
 			Usage:    "Filter to only include assets captured before this date (ISO format).",
 			BodyPath: "captured_before",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "image",
 			Usage:     "Image file to search for similar assets. Can be combined with text query.",
 			BodyPath:  "image",
 			FileInput: true,
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "library-id",
 			Usage:    "Library to search assets from (optional)",
 			BodyPath: "library_id",
@@ -110,7 +110,7 @@ var searchSearchAssets = cli.Command{
 			Usage:    "Filter to only include assets containing ALL of these person IDs. Can be comma-delimited string (e.g. 'person_123,person_abc') or multiple query parameters.",
 			BodyPath: "person_ids",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "query",
 			Usage:    "The text query to search for. If you want to search for a specific person or set of people, use the person_ids parameter instead.If you want to search for a photos taken during a specific date range, use the captured_before and captured_after parameters instead.",
 			BodyPath: "query",

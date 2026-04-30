@@ -24,7 +24,7 @@ var facesRetrieve = cli.Command{
 			Usage:    "Face ID (with `face_` prefix) to fetch. Obtain from `list_faces` or from the `faces` array on `get_asset` / `list_assets` responses.",
 			Required: true,
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "library-id",
 			Usage:     "Library the face belongs to. Optional if the user has a single library; required when they have multiple.",
 			QueryPath: "library_id",
@@ -44,12 +44,12 @@ var facesUpdate = cli.Command{
 			Usage:    "Face ID (with `face_` prefix) of the face detection to update.",
 			Required: true,
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "library-id",
 			Usage:     "Library the face belongs to. Optional if the user has a single library; required when they have multiple.",
 			QueryPath: "library_id",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "person-id",
 			Usage:    "Target person ID (with `person_` prefix) to assign this face to. Pass `null` to detach the face from its current person without deleting either. Get IDs from `list_people`; use `create_person` first if the target identity doesn't exist yet.",
 			BodyPath: "person_id",
@@ -64,7 +64,7 @@ var facesList = cli.Command{
 	Usage:   "Returns a paginated list of individual face detections (with bounding boxes),\nordered by creation time (newest first). Each row is a single face in a single\nasset — a person with many photos will have many face rows.",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "asset-id",
 			Usage:     "Return only faces detected in this asset. Useful for 'show me all the faces in this photo'.",
 			QueryPath: "asset_id",
@@ -74,7 +74,7 @@ var facesList = cli.Command{
 			Usage:     "Look up specific faces by ID (max 100). IDs use the `face_` prefix.",
 			QueryPath: "ids",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "library-id",
 			Usage:     "Library to list from. Optional if the user has a single library; required when they have multiple.",
 			QueryPath: "library_id",
@@ -85,12 +85,12 @@ var facesList = cli.Command{
 			Default:   20,
 			QueryPath: "limit",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "person-id",
 			Usage:     "Return only faces currently assigned to this person. Useful for reviewing or curating a person's face cluster.",
 			QueryPath: "person_id",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "starting-after-id",
 			Usage:     "Cursor for pagination. Pass the `id` of the last face in the previous response's `data` to fetch the next page. Omit for the first page.",
 			QueryPath: "starting_after_id",
@@ -114,7 +114,7 @@ var facesDelete = cli.Command{
 			Usage:    "Face ID (with `face_` prefix) of the face detection to delete.",
 			Required: true,
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "library-id",
 			Usage:     "Library the face belongs to. Optional if the user has a single library; required when they have multiple.",
 			QueryPath: "library_id",

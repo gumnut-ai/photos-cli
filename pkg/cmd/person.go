@@ -24,29 +24,29 @@ var peopleCreate = cli.Command{
 			Usage:    "Optional birth date (ISO 8601 date, YYYY-MM-DD) for this person.",
 			BodyPath: "birth_date",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*bool]{
 			Name:     "is-favorite",
 			Usage:    "If true, the person is marked as a favorite. Defaults to false.",
-			Default:  false,
+			Default:  requestflag.Ptr[bool](false),
 			BodyPath: "is_favorite",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*bool]{
 			Name:     "is-hidden",
 			Usage:    "If true, the person is hidden from default listings. Defaults to false.",
-			Default:  false,
+			Default:  requestflag.Ptr[bool](false),
 			BodyPath: "is_hidden",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "library-id",
 			Usage:    "Library to create the person in. Optional if the user has a single library; required when they have multiple.",
 			BodyPath: "library_id",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "name",
 			Usage:    "Display name for the new person (e.g., 'Alice'). Optional — unnamed people can be named later via `update_person`.",
 			BodyPath: "name",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "thumbnail-face-id",
 			Usage:    "ID of the face to use as this person's thumbnail (with `face_` prefix). Typically set after the person has at least one associated face — get face IDs from `list_faces`.",
 			BodyPath: "thumbnail_face_id",
@@ -86,22 +86,22 @@ var peopleUpdate = cli.Command{
 			Usage:    "New birth date (ISO 8601 date). Omit to leave unchanged.",
 			BodyPath: "birth_date",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*bool]{
 			Name:     "is-favorite",
 			Usage:    "Mark or unmark this person as a favorite. Omit to leave unchanged.",
 			BodyPath: "is_favorite",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*bool]{
 			Name:     "is-hidden",
 			Usage:    "Hide or unhide this person. Omit to leave unchanged.",
 			BodyPath: "is_hidden",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "name",
 			Usage:    "New display name. Omit to leave unchanged.",
 			BodyPath: "name",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "thumbnail-face-id",
 			Usage:    "New thumbnail face ID for this person. Omit to leave unchanged. Get face IDs from `list_faces`.",
 			BodyPath: "thumbnail_face_id",
@@ -116,12 +116,12 @@ var peopleList = cli.Command{
 	Usage:   "Returns a paginated list of people (named identities that group one or more\nfaces), ordered by creation time (newest first). Use this to enumerate who\nappears in the library, to resolve a user-typed name to a `person_id`, or to\nfind who appears in a specific asset or album.",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "album-id",
 			Usage:     "Return only people who appear in at least one asset of this album. Useful for 'who is in this album?'.",
 			QueryPath: "album_id",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "asset-id",
 			Usage:     "Return only people who have at least one face in this asset. Useful for 'who is in this photo?'.",
 			QueryPath: "asset_id",
@@ -131,7 +131,7 @@ var peopleList = cli.Command{
 			Usage:     "Look up specific people by ID (max 100; each ID has the `person_` prefix). When set, `name_filter` defaults to `all` so unnamed clusters are included in the lookup.",
 			QueryPath: "ids",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "library-id",
 			Usage:     "Library to list from. Optional if the user has a single library; required when they have multiple.",
 			QueryPath: "library_id",
@@ -142,17 +142,17 @@ var peopleList = cli.Command{
 			Default:   20,
 			QueryPath: "limit",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "name",
 			Usage:     "Filter by name using case-insensitive substring matching. Use this to resolve a user-supplied name like 'Alice' into a `person_id`, then pass that ID into `search_assets.person_ids` or `list_assets.person_id`.",
 			QueryPath: "name",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "name-filter",
 			Usage:     "Filter by name status: `named` returns only people with a name; `unnamed` returns only nameless face clusters awaiting a name; `all` returns both. Defaults to `named` (or `all` when `ids` is provided).",
 			QueryPath: "name_filter",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "starting-after-id",
 			Usage:     "Cursor for pagination. Pass the `id` of the last person in the previous response's `data` to fetch the next page. Omit for the first page.",
 			QueryPath: "starting_after_id",
