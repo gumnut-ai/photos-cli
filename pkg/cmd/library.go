@@ -86,7 +86,7 @@ var librariesList = cli.Command{
 
 var librariesDelete = cli.Command{
 	Name:    "delete",
-	Usage:   "Deletes the library and all its associated database records — assets, albums,\npeople, and faces — via cascading foreign-key delete. This is irreversible and\nshould be used only when the user explicitly confirms they want to destroy an\nentire library.",
+	Usage:   "Deletes the library and all its contents — assets (including their stored\nfiles), albums, people, and faces. This is irreversible and should be used only\nwhen the user explicitly confirms they want to destroy an entire library.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
