@@ -20,9 +20,10 @@ var facesRetrieve = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "face-id",
-			Usage:    "Face ID (with `face_` prefix) to fetch. Obtain from `list_faces` or from the `faces` array on `get_asset` / `list_assets` responses.",
-			Required: true,
+			Name:      "face-id",
+			Usage:     "Face ID (with `face_` prefix) to fetch. Obtain from `list_faces` or from the `faces` array on `get_asset` / `list_assets` responses.",
+			Required:  true,
+			PathParam: "face_id",
 		},
 		&requestflag.Flag[*string]{
 			Name:      "library-id",
@@ -40,9 +41,10 @@ var facesUpdate = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "face-id",
-			Usage:    "Face ID (with `face_` prefix) of the face detection to update.",
-			Required: true,
+			Name:      "face-id",
+			Usage:     "Face ID (with `face_` prefix) of the face detection to update.",
+			Required:  true,
+			PathParam: "face_id",
 		},
 		&requestflag.Flag[*string]{
 			Name:      "library-id",
@@ -110,9 +112,10 @@ var facesDelete = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "face-id",
-			Usage:    "Face ID (with `face_` prefix) of the face detection to delete.",
-			Required: true,
+			Name:      "face-id",
+			Usage:     "Face ID (with `face_` prefix) of the face detection to delete.",
+			Required:  true,
+			PathParam: "face_id",
 		},
 		&requestflag.Flag[*string]{
 			Name:      "library-id",
@@ -135,8 +138,6 @@ func handleFacesRetrieve(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.FaceGetParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -147,6 +148,8 @@ func handleFacesRetrieve(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.FaceGetParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -184,8 +187,6 @@ func handleFacesUpdate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.FaceUpdateParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -196,6 +197,8 @@ func handleFacesUpdate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.FaceUpdateParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -230,8 +233,6 @@ func handleFacesList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.FaceListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -242,6 +243,8 @@ func handleFacesList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.FaceListParams{}
 
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
@@ -288,8 +291,6 @@ func handleFacesDelete(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.FaceDeleteParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -300,6 +301,8 @@ func handleFacesDelete(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.FaceDeleteParams{}
 
 	return client.Faces.Delete(
 		ctx,

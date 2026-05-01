@@ -35,8 +35,9 @@ var apiKeysUpdate = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "key-id",
-			Required: true,
+			Name:      "key-id",
+			Required:  true,
+			PathParam: "key_id",
 		},
 		&requestflag.Flag[string]{
 			Name:     "name",
@@ -63,8 +64,9 @@ var apiKeysDelete = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "key-id",
-			Required: true,
+			Name:      "key-id",
+			Required:  true,
+			PathParam: "key_id",
 		},
 	},
 	Action:          handleAPIKeysDelete,
@@ -79,8 +81,6 @@ func handleAPIKeysCreate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.APIKeyNewParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -91,6 +91,8 @@ func handleAPIKeysCreate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.APIKeyNewParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -123,8 +125,6 @@ func handleAPIKeysUpdate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.APIKeyUpdateParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -135,6 +135,8 @@ func handleAPIKeysUpdate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.APIKeyUpdateParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))

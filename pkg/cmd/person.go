@@ -62,9 +62,10 @@ var peopleRetrieve = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "person-id",
-			Usage:    "Person ID (with `person_` prefix) to fetch. Obtain from `list_people`, `get_face.person_id`, or any response containing a person reference.",
-			Required: true,
+			Name:      "person-id",
+			Usage:     "Person ID (with `person_` prefix) to fetch. Obtain from `list_people`, `get_face.person_id`, or any response containing a person reference.",
+			Required:  true,
+			PathParam: "person_id",
 		},
 	},
 	Action:          handlePeopleRetrieve,
@@ -77,9 +78,10 @@ var peopleUpdate = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "person-id",
-			Usage:    "Person ID (with `person_` prefix) of the person to update.",
-			Required: true,
+			Name:      "person-id",
+			Usage:     "Person ID (with `person_` prefix) of the person to update.",
+			Required:  true,
+			PathParam: "person_id",
 		},
 		&requestflag.Flag[any]{
 			Name:     "birth-date",
@@ -172,9 +174,10 @@ var peopleDelete = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "person-id",
-			Usage:    "Person ID (with `person_` prefix) of the person to delete.",
-			Required: true,
+			Name:      "person-id",
+			Usage:     "Person ID (with `person_` prefix) of the person to delete.",
+			Required:  true,
+			PathParam: "person_id",
 		},
 	},
 	Action:          handlePeopleDelete,
@@ -187,8 +190,9 @@ var peopleMerge = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "person-id",
-			Required: true,
+			Name:      "person-id",
+			Required:  true,
+			PathParam: "person_id",
 		},
 		&requestflag.Flag[[]string]{
 			Name:     "source-person-id",
@@ -209,8 +213,6 @@ func handlePeopleCreate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.PersonNewParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -221,6 +223,8 @@ func handlePeopleCreate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.PersonNewParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -295,8 +299,6 @@ func handlePeopleUpdate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.PersonUpdateParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -307,6 +309,8 @@ func handlePeopleUpdate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.PersonUpdateParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -341,8 +345,6 @@ func handlePeopleList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.PersonListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -353,6 +355,8 @@ func handlePeopleList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.PersonListParams{}
 
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
@@ -424,8 +428,6 @@ func handlePeopleMerge(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.PersonMergeParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -436,6 +438,8 @@ func handlePeopleMerge(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.PersonMergeParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))

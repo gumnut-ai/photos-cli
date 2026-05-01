@@ -62,9 +62,10 @@ var assetsRetrieve = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "asset-id",
-			Usage:    "Asset ID (with `asset_` prefix) to fetch. Obtain from `list_assets`, `search_assets`, or `list_album_assets`.",
-			Required: true,
+			Name:      "asset-id",
+			Usage:     "Asset ID (with `asset_` prefix) to fetch. Obtain from `list_assets`, `search_assets`, or `list_album_assets`.",
+			Required:  true,
+			PathParam: "asset_id",
 		},
 	},
 	Action:          handleAssetsRetrieve,
@@ -138,9 +139,10 @@ var assetsDelete = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "asset-id",
-			Usage:    "Asset ID (with `asset_` prefix) of the asset to permanently delete.",
-			Required: true,
+			Name:      "asset-id",
+			Usage:     "Asset ID (with `asset_` prefix) of the asset to permanently delete.",
+			Required:  true,
+			PathParam: "asset_id",
 		},
 	},
 	Action:          handleAssetsDelete,
@@ -243,8 +245,6 @@ func handleAssetsCreate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.AssetNewParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -255,6 +255,8 @@ func handleAssetsCreate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.AssetNewParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -326,8 +328,6 @@ func handleAssetsList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.AssetListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -338,6 +338,8 @@ func handleAssetsList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.AssetListParams{}
 
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
@@ -406,8 +408,6 @@ func handleAssetsCheckExistence(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.AssetCheckExistenceParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -418,6 +418,8 @@ func handleAssetsCheckExistence(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.AssetCheckExistenceParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -447,8 +449,6 @@ func handleAssetsCounts(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.AssetCountsParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -459,6 +459,8 @@ func handleAssetsCounts(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.AssetCountsParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))

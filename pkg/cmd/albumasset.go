@@ -65,9 +65,10 @@ var albumAssetsGet = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "album-asset-id",
-			Usage:    "Album-asset junction row ID (with `album_asset_` prefix). Obtain from `list_album_assets`. Not the same as `asset_id` or `album_id`.",
-			Required: true,
+			Name:      "album-asset-id",
+			Usage:     "Album-asset junction row ID (with `album_asset_` prefix). Obtain from `list_album_assets`. Not the same as `asset_id` or `album_id`.",
+			Required:  true,
+			PathParam: "album_asset_id",
 		},
 	},
 	Action:          handleAlbumAssetsGet,
@@ -82,8 +83,6 @@ func handleAlbumAssetsList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.AlbumAssetListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -94,6 +93,8 @@ func handleAlbumAssetsList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.AlbumAssetListParams{}
 
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")

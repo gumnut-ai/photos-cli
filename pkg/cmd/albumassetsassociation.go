@@ -20,9 +20,10 @@ var albumsAssetsAssociationsAdd = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "album-id",
-			Usage:    "Album ID (with `album_` prefix) of the album to add the assets to.",
-			Required: true,
+			Name:      "album-id",
+			Usage:     "Album ID (with `album_` prefix) of the album to add the assets to.",
+			Required:  true,
+			PathParam: "album_id",
 		},
 		&requestflag.Flag[[]string]{
 			Name:     "asset-id",
@@ -41,9 +42,10 @@ var albumsAssetsAssociationsRemove = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "album-id",
-			Usage:    "Album ID (with `album_` prefix) of the album to detach assets from.",
-			Required: true,
+			Name:      "album-id",
+			Usage:     "Album ID (with `album_` prefix) of the album to detach assets from.",
+			Required:  true,
+			PathParam: "album_id",
 		},
 		&requestflag.Flag[[]string]{
 			Name:     "asset-id",
@@ -67,8 +69,6 @@ func handleAlbumsAssetsAssociationsAdd(ctx context.Context, cmd *cli.Command) er
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.AlbumAssetsAssociationAddParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -79,6 +79,8 @@ func handleAlbumsAssetsAssociationsAdd(ctx context.Context, cmd *cli.Command) er
 	if err != nil {
 		return err
 	}
+
+	params := photos.AlbumAssetsAssociationAddParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -116,8 +118,6 @@ func handleAlbumsAssetsAssociationsRemove(ctx context.Context, cmd *cli.Command)
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.AlbumAssetsAssociationRemoveParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -128,6 +128,8 @@ func handleAlbumsAssetsAssociationsRemove(ctx context.Context, cmd *cli.Command)
 	if err != nil {
 		return err
 	}
+
+	params := photos.AlbumAssetsAssociationRemoveParams{}
 
 	return client.Albums.AssetsAssociations.Remove(
 		ctx,
