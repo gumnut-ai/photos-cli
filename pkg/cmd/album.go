@@ -45,9 +45,10 @@ var albumsRetrieve = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "album-id",
-			Usage:    "Album ID (with `album_` prefix) to fetch. Obtain from `list_albums` (optionally filtered by `asset_id` to find albums containing a specific asset), `list_album_assets`, or any response containing an album reference.",
-			Required: true,
+			Name:      "album-id",
+			Usage:     "Album ID (with `album_` prefix) to fetch. Obtain from `list_albums` (optionally filtered by `asset_id` to find albums containing a specific asset), `list_album_assets`, or any response containing an album reference.",
+			Required:  true,
+			PathParam: "album_id",
 		},
 	},
 	Action:          handleAlbumsRetrieve,
@@ -60,9 +61,10 @@ var albumsUpdate = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "album-id",
-			Usage:    "Album ID (with `album_` prefix) of the album to rename or re-describe.",
-			Required: true,
+			Name:      "album-id",
+			Usage:     "Album ID (with `album_` prefix) of the album to rename or re-describe.",
+			Required:  true,
+			PathParam: "album_id",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "description",
@@ -125,9 +127,10 @@ var albumsDelete = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "album-id",
-			Usage:    "Album ID (with `album_` prefix) of the album to delete.",
-			Required: true,
+			Name:      "album-id",
+			Usage:     "Album ID (with `album_` prefix) of the album to delete.",
+			Required:  true,
+			PathParam: "album_id",
 		},
 	},
 	Action:          handleAlbumsDelete,
@@ -142,8 +145,6 @@ func handleAlbumsCreate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.AlbumNewParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -154,6 +155,8 @@ func handleAlbumsCreate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.AlbumNewParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -228,8 +231,6 @@ func handleAlbumsUpdate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.AlbumUpdateParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -240,6 +241,8 @@ func handleAlbumsUpdate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.AlbumUpdateParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -274,8 +277,6 @@ func handleAlbumsList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.AlbumListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -286,6 +287,8 @@ func handleAlbumsList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.AlbumListParams{}
 
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")

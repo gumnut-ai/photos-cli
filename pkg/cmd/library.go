@@ -41,9 +41,10 @@ var librariesRetrieve = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "library-id",
-			Usage:    "Library ID (with `lib_` prefix) to fetch. Obtain from `list_libraries` or any response containing a library reference.",
-			Required: true,
+			Name:      "library-id",
+			Usage:     "Library ID (with `lib_` prefix) to fetch. Obtain from `list_libraries` or any response containing a library reference.",
+			Required:  true,
+			PathParam: "library_id",
 		},
 	},
 	Action:          handleLibrariesRetrieve,
@@ -56,9 +57,10 @@ var librariesUpdate = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "library-id",
-			Usage:    "Library ID (with `lib_` prefix) of the library to update.",
-			Required: true,
+			Name:      "library-id",
+			Usage:     "Library ID (with `lib_` prefix) of the library to update.",
+			Required:  true,
+			PathParam: "library_id",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "description",
@@ -90,9 +92,10 @@ var librariesDelete = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "library-id",
-			Usage:    "Library ID (with `lib_` prefix) of the library to delete.",
-			Required: true,
+			Name:      "library-id",
+			Usage:     "Library ID (with `lib_` prefix) of the library to delete.",
+			Required:  true,
+			PathParam: "library_id",
 		},
 	},
 	Action:          handleLibrariesDelete,
@@ -107,8 +110,6 @@ func handleLibrariesCreate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.LibraryNewParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -119,6 +120,8 @@ func handleLibrariesCreate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.LibraryNewParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -193,8 +196,6 @@ func handleLibrariesUpdate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := photos.LibraryUpdateParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -205,6 +206,8 @@ func handleLibrariesUpdate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := photos.LibraryUpdateParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
