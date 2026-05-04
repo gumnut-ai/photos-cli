@@ -26,6 +26,11 @@ var facesRetrieve = cli.Command{
 			PathParam: "face_id",
 		},
 		&requestflag.Flag[*string]{
+			Name:      "include",
+			Usage:     "Comma-separated list of opt-in expansion fields. See `list_faces` for supported values.",
+			QueryPath: "include",
+		},
+		&requestflag.Flag[*string]{
 			Name:      "library-id",
 			Usage:     "Library the face belongs to. Optional if the user has a single library; required when they have multiple.",
 			QueryPath: "library_id",
@@ -75,6 +80,11 @@ var facesList = cli.Command{
 			Name:      "id",
 			Usage:     "Look up specific faces by ID (max 100). IDs use the `face_` prefix.",
 			QueryPath: "ids",
+		},
+		&requestflag.Flag[*string]{
+			Name:      "include",
+			Usage:     "Comma-separated list of opt-in expansion fields. Supported values: `cluster_assignment` (adds the nested `cluster_assignment` object — `distance_to_person` and a top-K `candidates` list of nearby Persons).",
+			QueryPath: "include",
 		},
 		&requestflag.Flag[*string]{
 			Name:      "library-id",
