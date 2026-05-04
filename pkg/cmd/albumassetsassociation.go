@@ -27,7 +27,7 @@ var albumsAssetsAssociationsAdd = cli.Command{
 		},
 		&requestflag.Flag[[]string]{
 			Name:     "asset-id",
-			Usage:    "Asset IDs (with `asset_` prefix) to associate with the album. Get IDs from `list_assets`, `search_assets`, or `list_album_assets`.",
+			Usage:    "Asset IDs (with `asset_` prefix) to associate with the album. Get IDs from `list_assets`, `search_assets`, or `list_album_assets`. Up to 100 ids per request.",
 			Required: true,
 			BodyPath: "asset_ids",
 		},
@@ -49,7 +49,7 @@ var albumsAssetsAssociationsRemove = cli.Command{
 		},
 		&requestflag.Flag[[]string]{
 			Name:     "asset-id",
-			Usage:    "Asset IDs (with `asset_` prefix) to associate with the album. Get IDs from `list_assets`, `search_assets`, or `list_album_assets`.",
+			Usage:    "Asset IDs (with `asset_` prefix) to associate with the album. Get IDs from `list_assets`, `search_assets`, or `list_album_assets`. Up to 100 ids per request.",
 			Required: true,
 			BodyPath: "asset_ids",
 		},
