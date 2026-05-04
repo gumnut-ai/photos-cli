@@ -67,6 +67,11 @@ var peopleRetrieve = cli.Command{
 			Required:  true,
 			PathParam: "person_id",
 		},
+		&requestflag.Flag[*string]{
+			Name:      "include",
+			Usage:     "Comma-separated list of opt-in expansion fields. See `list_people` for supported values.",
+			QueryPath: "include",
+		},
 	},
 	Action:          handlePeopleRetrieve,
 	HideHelpCommand: true,
@@ -132,6 +137,11 @@ var peopleList = cli.Command{
 			Name:      "id",
 			Usage:     "Look up specific people by ID (max 100; each ID has the `person_` prefix). When set, `name_filter` defaults to `all` so unnamed clusters are included in the lookup.",
 			QueryPath: "ids",
+		},
+		&requestflag.Flag[*string]{
+			Name:      "include",
+			Usage:     "Comma-separated list of opt-in expansion fields. Supported values: `cluster_metrics` (adds the nested `cluster_metrics` object — `pairwise_p90`, `pairwise_mean`, `face_count` — for each Person with a populated centroid). Unknown values return 422.",
+			QueryPath: "include",
 		},
 		&requestflag.Flag[*string]{
 			Name:      "library-id",
@@ -268,9 +278,16 @@ func handlePeopleRetrieve(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
+	params := photos.PersonGetParams{}
+
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.People.Get(ctx, cmd.Value("person-id").(string), options...)
+	_, err = client.People.Get(
+		ctx,
+		cmd.Value("person-id").(string),
+		params,
+		options...,
+	)
 	if err != nil {
 		return err
 	}
