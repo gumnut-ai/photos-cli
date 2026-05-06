@@ -237,6 +237,84 @@ var assetsCounts = cli.Command{
 	HideHelpCommand: true,
 }
 
+var assetsDeleteList = cli.Command{
+	Name:    "delete-list",
+	Usage:   "Hard-deletes each specified asset — the database record, the stored file, and\nall associated data (faces, album links, etc.). **Irreversible.** Prefer\n`trash_assets` for the user's standard delete action so accidents can be\nrecovered.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[[]string]{
+			Name:     "id",
+			Usage:    "Asset IDs (each with the `asset_` prefix) to operate on. Up to 100 ids per request.",
+			Required: true,
+			BodyPath: "ids",
+		},
+		&requestflag.Flag[*string]{
+			Name:      "library-id",
+			Usage:     "Library that owns the assets. Optional if the user has a single library; required when they have multiple.",
+			QueryPath: "library_id",
+		},
+	},
+	Action:          handleAssetsDeleteList,
+	HideHelpCommand: true,
+}
+
+var assetsEmptyTrash = cli.Command{
+	Name:    "empty-trash",
+	Usage:   "Hard-deletes every trashed asset in the caller's library in one shot — storage\nand CDN are cleaned up via the same outbox path as the scheduled purge task.\n**Irreversible**. Deliberately not exposed as an MCP tool.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[*string]{
+			Name:      "library-id",
+			Usage:     "Library whose trashed assets to permanently delete. Optional if the user has a single library; required when they have multiple.",
+			QueryPath: "library_id",
+		},
+	},
+	Action:          handleAssetsEmptyTrash,
+	HideHelpCommand: true,
+}
+
+var assetsRestore = cli.Command{
+	Name:    "restore",
+	Usage:   "Restores trashed assets so they reappear in default list/search results.\nIdempotent — assets that are already live are silently skipped.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[[]string]{
+			Name:     "id",
+			Usage:    "Asset IDs (each with the `asset_` prefix) to operate on. Up to 100 ids per request.",
+			Required: true,
+			BodyPath: "ids",
+		},
+		&requestflag.Flag[*string]{
+			Name:      "library-id",
+			Usage:     "Library that owns the assets. Optional if the user has a single library; required when they have multiple.",
+			QueryPath: "library_id",
+		},
+	},
+	Action:          handleAssetsRestore,
+	HideHelpCommand: true,
+}
+
+var assetsTrash = cli.Command{
+	Name:    "trash",
+	Usage:   "Soft-deletes the given assets. Trashed assets are excluded from default\nlist/search results and are purged after the configured retention window.\n**Reversible** via `restore_assets` until purge.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[[]string]{
+			Name:     "id",
+			Usage:    "Asset IDs (each with the `asset_` prefix) to operate on. Up to 100 ids per request.",
+			Required: true,
+			BodyPath: "ids",
+		},
+		&requestflag.Flag[*string]{
+			Name:      "library-id",
+			Usage:     "Library that owns the assets. Optional if the user has a single library; required when they have multiple.",
+			QueryPath: "library_id",
+		},
+	},
+	Action:          handleAssetsTrash,
+	HideHelpCommand: true,
+}
+
 func handleAssetsCreate(ctx context.Context, cmd *cli.Command) error {
 	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -480,4 +558,100 @@ func handleAssetsCounts(ctx context.Context, cmd *cli.Command) error {
 		Title:          "assets counts",
 		Transform:      transform,
 	})
+}
+
+func handleAssetsDeleteList(ctx context.Context, cmd *cli.Command) error {
+	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatRepeat,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	params := photos.AssetDeleteListParams{}
+
+	return client.Assets.DeleteList(ctx, params, options...)
+}
+
+func handleAssetsEmptyTrash(ctx context.Context, cmd *cli.Command) error {
+	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatRepeat,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	params := photos.AssetEmptyTrashParams{}
+
+	return client.Assets.EmptyTrash(ctx, params, options...)
+}
+
+func handleAssetsRestore(ctx context.Context, cmd *cli.Command) error {
+	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatRepeat,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	params := photos.AssetRestoreParams{}
+
+	return client.Assets.Restore(ctx, params, options...)
+}
+
+func handleAssetsTrash(ctx context.Context, cmd *cli.Command) error {
+	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatRepeat,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	params := photos.AssetTrashParams{}
+
+	return client.Assets.Trash(ctx, params, options...)
 }
