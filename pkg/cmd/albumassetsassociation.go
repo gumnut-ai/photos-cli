@@ -16,7 +16,7 @@ import (
 
 var albumsAssetsAssociationsAdd = cli.Command{
 	Name:    "add",
-	Usage:   "Adds one or more existing assets to the specified album. Assets must already be\nin the same library as the album (this tool does not upload new assets). Assets\nalready in the album are silently skipped and returned separately as\n`duplicate_assets`. Idempotent: calling with the same IDs twice leaves the album\nin the same state.",
+	Usage:   "Adds one or more existing assets to the specified album. Assets must already be\nin the same library as the album (this tool does not upload new assets). Assets\nalready in the album are silently skipped and returned separately as\n`duplicate_assets`; missing or different-library IDs are skipped and returned as\n`not_found_assets`. Idempotent: calling with the same IDs twice leaves the album\nin the same state.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
