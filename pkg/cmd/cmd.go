@@ -106,6 +106,10 @@ func init() {
 					&assetsDelete,
 					&assetsCheckExistence,
 					&assetsCounts,
+					&assetsDeleteList,
+					&assetsEmptyTrash,
+					&assetsRestore,
+					&assetsTrash,
 				},
 			},
 			{

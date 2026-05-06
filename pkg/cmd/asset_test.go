@@ -142,3 +142,93 @@ func TestAssetsCounts(t *testing.T) {
 		)
 	})
 }
+
+func TestAssetsDeleteList(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"assets", "delete-list",
+			"--id", "string",
+			"--library-id", "library_id",
+		)
+	})
+
+	t.Run("piping data", func(t *testing.T) {
+		// Test piping YAML data over stdin
+		pipeData := []byte("" +
+			"ids:\n" +
+			"  - string\n")
+		mocktest.TestRunMockTestWithPipeAndFlags(
+			t, pipeData,
+			"--api-key", "string",
+			"assets", "delete-list",
+			"--library-id", "library_id",
+		)
+	})
+}
+
+func TestAssetsEmptyTrash(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"assets", "empty-trash",
+			"--library-id", "library_id",
+		)
+	})
+}
+
+func TestAssetsRestore(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"assets", "restore",
+			"--id", "string",
+			"--library-id", "library_id",
+		)
+	})
+
+	t.Run("piping data", func(t *testing.T) {
+		// Test piping YAML data over stdin
+		pipeData := []byte("" +
+			"ids:\n" +
+			"  - string\n")
+		mocktest.TestRunMockTestWithPipeAndFlags(
+			t, pipeData,
+			"--api-key", "string",
+			"assets", "restore",
+			"--library-id", "library_id",
+		)
+	})
+}
+
+func TestAssetsTrash(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"assets", "trash",
+			"--id", "string",
+			"--library-id", "library_id",
+		)
+	})
+
+	t.Run("piping data", func(t *testing.T) {
+		// Test piping YAML data over stdin
+		pipeData := []byte("" +
+			"ids:\n" +
+			"  - string\n")
+		mocktest.TestRunMockTestWithPipeAndFlags(
+			t, pipeData,
+			"--api-key", "string",
+			"assets", "trash",
+			"--library-id", "library_id",
+		)
+	})
+}
