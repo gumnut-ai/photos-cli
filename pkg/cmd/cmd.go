@@ -26,7 +26,7 @@ var (
 func init() {
 	Command = &cli.Command{
 		Name:      "photos",
-		Usage:     "CLI for the Gumnut AI API",
+		Usage:     "CLI for the Gumnut API",
 		Suggest:   true,
 		Version:   Version,
 		ErrWriter: &CommandErrorBuffer,
