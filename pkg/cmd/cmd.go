@@ -85,6 +85,17 @@ func init() {
 		},
 		Commands: []*cli.Command{
 			{
+				Name:     "api-keys",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&apiKeysCreate,
+					&apiKeysUpdate,
+					&apiKeysList,
+					&apiKeysDelete,
+				},
+			},
+			{
 				Name:     "assets",
 				Category: "API RESOURCE",
 				Suggest:  true,
