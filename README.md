@@ -1,6 +1,6 @@
-# Gumnut CLI
+# Gumnut AI CLI
 
-The official CLI for the [Gumnut REST API](https://api.gumnut.ai/redoc).
+The official CLI for the [Gumnut AI REST API](https://docs.gumnut.ai).
 
 It is generated with [Stainless](https://www.stainless.com/).
 
@@ -114,7 +114,7 @@ photos <command> --arg @data://file.txt
 
 ## Linking different Go SDK versions
 
-You can link the CLI against a different version of the Gumnut Go SDK
+You can link the CLI against a different version of the Gumnut AI Go SDK
 for development purposes using the `./scripts/link` script.
 
 To link to a specific version from a repository (version can be a branch,
