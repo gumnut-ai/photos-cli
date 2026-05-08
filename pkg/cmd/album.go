@@ -16,7 +16,7 @@ import (
 
 var albumsCreate = cli.Command{
 	Name:    "create",
-	Usage:   "Creates an album (with optional name and description) and returns it. The album\nstarts empty — follow up with `add_assets_to_album` to populate it. To rename an\nexisting album, use `update_album` instead of creating a new one.",
+	Usage:   "Creates a new, empty album in a library (with optional name and description) and\nreturns it. The album starts empty — follow up with `add_assets_to_album` to\npopulate it. To rename an existing album, use `update_album` instead of creating\na new one.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[*string]{
@@ -41,7 +41,7 @@ var albumsCreate = cli.Command{
 
 var albumsRetrieve = cli.Command{
 	Name:    "retrieve",
-	Usage:   "Fetches one album's metadata (name, description, cover, counts). Use when you\nalready have an album ID. Does not include the album's assets — use\n`list_album_assets` or `list_assets` with `album_id` for that.",
+	Usage:   "Fetches one album's metadata by ID (name, description, cover, counts). Use when\nyou already have an album ID. Does not include the album's assets — use\n`list_album_assets` or `list_assets` with `album_id` for that.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -57,7 +57,7 @@ var albumsRetrieve = cli.Command{
 
 var albumsUpdate = cli.Command{
 	Name:    "update",
-	Usage:   "Updates the `name` and/or `description` of an existing album. Only the fields\nincluded in the request body are changed. To modify the contents of an album,\nuse `add_assets_to_album` / `remove_assets_from_album` instead — this tool only\nchanges album metadata.",
+	Usage:   "Renames an album or changes its description. Only the fields included in the\nrequest body are changed. To modify the contents of an album, use\n`add_assets_to_album` / `remove_assets_from_album` instead — this tool only\nchanges album metadata.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -83,7 +83,7 @@ var albumsUpdate = cli.Command{
 
 var albumsList = cli.Command{
 	Name:    "list",
-	Usage:   "Returns a paginated list of albums ordered by creation time (newest first). Use\nthis to enumerate a user's albums or to find which albums contain a specific\nasset (via `asset_id`).",
+	Usage:   "Returns a paginated list of albums ordered by creation time (newest first),\noptionally filtered by asset membership or ID. Use this to enumerate a user's\nalbums or to find which albums contain a specific asset (via `asset_id`).",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[*string]{

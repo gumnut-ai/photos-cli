@@ -16,7 +16,7 @@ import (
 
 var searchSearch = cli.Command{
 	Name:    "search",
-	Usage:   "Searches for assets using semantic (CLIP-based) image-content matching and/or\nstructured filters. Use this tool when the user describes _what's in_ the photos\nthey want — subjects, scenes, places, activities, moods, objects — as opposed to\nbrowsing by album membership or exact ID.",
+	Usage:   "Searches for assets using semantic (CLIP-based) image-content matching and/or\nstructured filters on people and date range. Use this tool when the user\ndescribes _what's in_ the photos they want — subjects, scenes, places,\nactivities, moods, objects — as opposed to browsing by album membership or exact\nID.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[any]{
