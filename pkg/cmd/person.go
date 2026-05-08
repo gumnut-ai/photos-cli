@@ -16,7 +16,7 @@ import (
 
 var peopleCreate = cli.Command{
 	Name:    "create",
-	Usage:   "Creates a new person. Most people are auto-created by face clustering, so this\ntool is typically used only when the user explicitly wants to introduce a new\nidentity before any faces are attached.",
+	Usage:   "Creates a new person record (a named identity for grouping faces). Most people\nare auto-created by face clustering, so this tool is typically used only when\nthe user explicitly wants to introduce a new identity before any faces are\nattached.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[any]{
@@ -58,7 +58,7 @@ var peopleCreate = cli.Command{
 
 var peopleRetrieve = cli.Command{
 	Name:    "retrieve",
-	Usage:   "Fetches one person's metadata (name, asset count, thumbnail, etc.). Use this\nwhen you already have a `person_id`. To find photos that contain this person,\nuse `search_assets` with `person_ids` or `list_assets` with `person_id`.",
+	Usage:   "Fetches one person's metadata by ID (name, asset count, thumbnail, etc.). Use\nthis when you already have a `person_id`. To find photos that contain this\nperson, use `search_assets` with `person_ids` or `list_assets` with `person_id`.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -79,7 +79,7 @@ var peopleRetrieve = cli.Command{
 
 var peopleUpdate = cli.Command{
 	Name:    "update",
-	Usage:   "Updates metadata on an existing person. Only the fields included in the request\nbody are changed. Typical use: assigning a name ('name this face cluster\n\"Alice\"') or choosing a better thumbnail.",
+	Usage:   "Updates a person's name, birth date, visibility, or thumbnail. Only the fields\nincluded in the request body are changed. Typical use: assigning a name ('name\nthis face cluster \"Alice\"') or choosing a better thumbnail.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -120,7 +120,7 @@ var peopleUpdate = cli.Command{
 
 var peopleList = cli.Command{
 	Name:    "list",
-	Usage:   "Returns a paginated list of people (named identities that group one or more\nfaces), ordered by creation time (newest first). Use this to enumerate who\nappears in the library, to resolve a user-typed name to a `person_id`, or to\nfind who appears in a specific asset or album.",
+	Usage:   "Returns a paginated list of people (named identities that group one or more\nfaces), ordered by creation time (newest first), optionally filtered by asset,\nalbum, name, or ID. Use this to enumerate who appears in the library, to resolve\na user-typed name to a `person_id`, or to find who appears in a specific asset\nor album.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[*string]{
@@ -180,7 +180,7 @@ var peopleList = cli.Command{
 
 var peopleDelete = cli.Command{
 	Name:    "delete",
-	Usage:   "Deletes the person. The faces that were attached to this person are not deleted\n— they become unassigned and will be re-clustered on the next clustering pass.",
+	Usage:   "Deletes the person record; the faces that were attached to this person are not\ndeleted — they become unassigned and will be re-clustered on the next clustering\npass.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{

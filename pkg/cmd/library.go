@@ -16,7 +16,7 @@ import (
 
 var librariesCreate = cli.Command{
 	Name:    "create",
-	Usage:   "Creates a new, empty library. A library is the top-level container for assets,\nalbums, people, and faces — most users have exactly one. Only create a new\nlibrary when the user explicitly asks for a separate container.",
+	Usage:   "Creates a new, empty photo library for the authenticated user. A library is the\ntop-level container for assets, albums, people, and faces — most users have\nexactly one. Only create a new library when the user explicitly asks for a\nseparate container.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -37,7 +37,7 @@ var librariesCreate = cli.Command{
 
 var librariesRetrieve = cli.Command{
 	Name:    "retrieve",
-	Usage:   "Fetches one library's metadata (name, description, asset count). Use when you\nalready have a specific `library_id`; for enumerating a user's libraries prefer\n`list_libraries`.",
+	Usage:   "Fetches one library's metadata by ID (name, description, asset count). Use when\nyou already have a specific `library_id`; for enumerating a user's libraries\nprefer `list_libraries`.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -53,7 +53,7 @@ var librariesRetrieve = cli.Command{
 
 var librariesUpdate = cli.Command{
 	Name:    "update",
-	Usage:   "Updates the `name` and/or `description` of an existing library. Only the fields\nincluded in the request body are changed. Library contents (assets, albums,\npeople, faces) are not affected.",
+	Usage:   "Renames a library or changes its description. Only the fields included in the\nrequest body are changed. Library contents (assets, albums, people, faces) are\nnot affected.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -79,7 +79,7 @@ var librariesUpdate = cli.Command{
 
 var librariesList = cli.Command{
 	Name:            "list",
-	Usage:           "Returns every library the user owns (no pagination — users typically have one or\na handful). Call this when another tool's `library_id` parameter is required but\nyou don't yet know which libraries exist. A single-library user can usually omit\n`library_id` on other tools entirely.",
+	Usage:           "Returns every library owned by the authenticated user (no pagination — users\ntypically have one or a handful). Call this when another tool's `library_id`\nparameter is required but you don't yet know which libraries exist. A\nsingle-library user can usually omit `library_id` on other tools entirely.",
 	Suggest:         true,
 	Flags:           []cli.Flag{},
 	Action:          handleLibrariesList,
@@ -88,7 +88,7 @@ var librariesList = cli.Command{
 
 var librariesDelete = cli.Command{
 	Name:    "delete",
-	Usage:   "Deletes the library and all its contents — assets (including their stored\nfiles), albums, people, and faces. This is irreversible and should be used only\nwhen the user explicitly confirms they want to destroy an entire library.",
+	Usage:   "Deletes the library and all its contents — assets (including their stored\nfiles), albums, people, and faces. **Destructive and irreversible** — should be\nused only when the user explicitly confirms they want to destroy an entire\nlibrary.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{

@@ -16,7 +16,7 @@ import (
 
 var albumAssetsList = cli.Command{
 	Name:    "list",
-	Usage:   "Returns paginated _link_ records describing which assets are in which albums —\neach row contains `album_id` + `asset_id` + link timestamps, not the full asset\nor album metadata. Use this when you specifically need the junction records (for\nsync or change tracking).",
+	Usage:   "Returns paginated _link_ records (lightweight join rows between albums and\nassets) describing which assets are in which albums — each row contains\n`album_id` + `asset_id` + link timestamps, not the full asset or album metadata.\nUse this when you specifically need the junction records (for sync or change\ntracking).",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[*string]{
@@ -61,7 +61,7 @@ var albumAssetsList = cli.Command{
 
 var albumAssetsGet = cli.Command{
 	Name:    "get",
-	Usage:   "Fetches one album-asset link record (the junction row between an album and an\nasset). Rarely needed directly; most callers want `get_asset` or `get_album`\ninstead.",
+	Usage:   "Fetches one album-asset link record by ID (the junction row between an album and\nan asset). Rarely needed directly; most callers want `get_asset` or `get_album`\ninstead.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{

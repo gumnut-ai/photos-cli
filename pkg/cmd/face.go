@@ -16,7 +16,7 @@ import (
 
 var facesRetrieve = cli.Command{
 	Name:    "retrieve",
-	Usage:   "Fetches one face's details (bounding box, assigned person, timestamps,\nthumbnail). Use when you already have a `face_id`.",
+	Usage:   "Fetches one face's details by ID (bounding box, assigned person, timestamps,\nthumbnail). Use when you already have a `face_id`.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -42,7 +42,7 @@ var facesRetrieve = cli.Command{
 
 var facesUpdate = cli.Command{
 	Name:    "update",
-	Usage:   "Assigns a face to a specific person, or detaches it (set `person_id` to null).\nThis is the right tool for 'this face is Alice' or 'this face isn't Bob after\nall'.",
+	Usage:   "Assigns a face to a specific person, or detaches it from its current person (set\n`person_id` to null). This is the right tool for 'this face is Alice' or 'this\nface isn't Bob after all'.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -68,7 +68,7 @@ var facesUpdate = cli.Command{
 
 var facesList = cli.Command{
 	Name:    "list",
-	Usage:   "Returns a paginated list of individual face detections (with bounding boxes),\nordered by creation time (newest first). Each row is a single face in a single\nasset — a person with many photos will have many face rows.",
+	Usage:   "Returns a paginated list of individual face detections (with bounding boxes),\nordered by creation time (newest first), optionally filtered by asset, person,\nor ID. Each row is a single face in a single asset — a person with many photos\nwill have many face rows.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[*string]{
@@ -118,7 +118,7 @@ var facesList = cli.Command{
 
 var facesDelete = cli.Command{
 	Name:    "delete",
-	Usage:   "Removes one face detection row. The underlying asset and the person this face\nwas assigned to are both preserved.",
+	Usage:   "Removes one face detection row; the underlying asset and the person this face\nwas assigned to are both preserved.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{

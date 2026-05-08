@@ -58,7 +58,7 @@ var assetsCreate = cli.Command{
 
 var assetsRetrieve = cli.Command{
 	Name:    "retrieve",
-	Usage:   "Fetches one asset and its associated metadata. Use this when you already have a\nspecific asset ID (e.g., from `list_assets`, `search_assets`, or\n`list_album_assets`) and need its full details. For bulk fetch of multiple known\nIDs, prefer `list_assets` with the `ids` parameter to avoid N round trips.",
+	Usage:   "Fetches one asset and its associated metadata by ID. Use this when you already\nhave a specific asset ID (e.g., from `list_assets`, `search_assets`, or\n`list_album_assets`) and need its full details. For bulk fetch of multiple known\nIDs, prefer `list_assets` with the `ids` parameter to avoid N round trips.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -74,7 +74,7 @@ var assetsRetrieve = cli.Command{
 
 var assetsList = cli.Command{
 	Name:    "list",
-	Usage:   "Returns a paginated list of assets ordered by local capture time (newest first).\nUse this tool for structured browsing and filtering — when the request can be\nexpressed as exact filters on album membership, people, date range, or specific\nasset IDs.",
+	Usage:   "Returns a paginated list of assets ordered by local capture time (newest first),\noptionally filtered by album, person, date range, or asset ID. Use this tool for\nstructured browsing and filtering — when the request can be expressed as exact\nfilters on album membership, people, date range, or specific asset IDs.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[*string]{
@@ -260,7 +260,7 @@ var assetsDeleteList = cli.Command{
 
 var assetsEmptyTrash = cli.Command{
 	Name:    "empty-trash",
-	Usage:   "Hard-deletes every trashed asset in the caller's library in one shot — storage\nand CDN are cleaned up via the same outbox path as the scheduled purge task.\n**Irreversible**. Deliberately not exposed as an MCP tool.",
+	Usage:   "Permanently deletes every trashed asset in the caller's library in one shot —\nstorage and CDN are cleaned up via the same outbox path as the scheduled purge\ntask. **Irreversible**. Deliberately not exposed as an MCP tool.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[*string]{
