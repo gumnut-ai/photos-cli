@@ -55,6 +55,7 @@ func TestAlbumsUpdate(t *testing.T) {
 			"--api-key", "string",
 			"albums", "update",
 			"--album-id", "album_id",
+			"--album-cover-asset-id", "album_cover_asset_id",
 			"--description", "description",
 			"--name", "name",
 		)
@@ -63,6 +64,7 @@ func TestAlbumsUpdate(t *testing.T) {
 	t.Run("piping data", func(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("" +
+			"album_cover_asset_id: album_cover_asset_id\n" +
 			"description: description\n" +
 			"name: name\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(

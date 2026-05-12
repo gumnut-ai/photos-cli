@@ -57,7 +57,7 @@ var albumsRetrieve = cli.Command{
 
 var albumsUpdate = cli.Command{
 	Name:    "update",
-	Usage:   "Renames an album or changes its description. Only the fields included in the\nrequest body are changed. To modify the contents of an album, use\n`add_assets_to_album` / `remove_assets_from_album` instead — this tool only\nchanges album metadata.",
+	Usage:   "Updates album metadata (name, description, and/or cover). Only the fields\nincluded in the request body are changed. To modify the contents of an album,\nuse `add_assets_to_album` / `remove_assets_from_album` instead — this tool only\nchanges album metadata.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -65,6 +65,11 @@ var albumsUpdate = cli.Command{
 			Usage:     "Album ID (with `album_` prefix) of the album to rename or re-describe.",
 			Required:  true,
 			PathParam: "album_id",
+		},
+		&requestflag.Flag[*string]{
+			Name:     "album-cover-asset-id",
+			Usage:    "Asset ID (with `asset_` prefix) to use as the album cover. Must be a live asset already in the album — get IDs from `list_album_assets`. Pass `null` to clear the explicit cover. Omit to leave unchanged.",
+			BodyPath: "album_cover_asset_id",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "description",
