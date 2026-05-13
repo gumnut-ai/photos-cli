@@ -34,9 +34,9 @@ var eventsGet = cli.Command{
 			Usage:     "Only return events created strictly before this timestamp (ISO 8601). Recommended for bounding a sync operation — capture `now` once and reuse it as `created_at_lt` across all pages so newly arriving events don't shift the window.",
 			QueryPath: "created_at_lt",
 		},
-		&requestflag.Flag[*string]{
-			Name:      "entity-types",
-			Usage:     "Comma-separated list of entity types to include (e.g., `asset,album`). Valid values: `asset`, `album`, `person`, `face`, `album_asset`, `metadata`. Omit to receive events for all types.",
+		&requestflag.Flag[any]{
+			Name:      "entity-type",
+			Usage:     "Entity types to include (e.g., `asset`, `album`). Valid values: `asset`, `album`, `person`, `face`, `album_asset`, `metadata`. Accepts multiple `entity_types=` query params or a single comma-delimited value (e.g., `entity_types=asset,album`). Omit to receive events for all types.",
 			QueryPath: "entity_types",
 		},
 		&requestflag.Flag[*string]{

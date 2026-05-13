@@ -31,7 +31,7 @@ var albumAssetsList = cli.Command{
 		},
 		&requestflag.Flag[any]{
 			Name:      "id",
-			Usage:     "Look up specific album-asset link records by ID (max 100). The ID has the `album_asset_` prefix.",
+			Usage:     "Look up specific album-asset link records by ID (max 100). The ID has the `album_asset_` prefix. Accepts multiple `ids=` query params or a single comma-delimited value (e.g., `ids=album_asset_1,album_asset_2`).",
 			QueryPath: "ids",
 		},
 		&requestflag.Flag[*string]{

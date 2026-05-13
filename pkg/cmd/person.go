@@ -67,9 +67,9 @@ var peopleRetrieve = cli.Command{
 			Required:  true,
 			PathParam: "person_id",
 		},
-		&requestflag.Flag[*string]{
+		&requestflag.Flag[any]{
 			Name:      "include",
-			Usage:     "Comma-separated list of opt-in expansion fields. See `list_people` for supported values.",
+			Usage:     "Opt-in expansion fields. See `list_people` for supported values. Accepts multiple `include=` query params or a single comma-delimited value.",
 			QueryPath: "include",
 		},
 	},
@@ -135,12 +135,12 @@ var peopleList = cli.Command{
 		},
 		&requestflag.Flag[any]{
 			Name:      "id",
-			Usage:     "Look up specific people by ID (max 100; each ID has the `person_` prefix). When set, `name_filter` defaults to `all` so unnamed clusters are included in the lookup.",
+			Usage:     "Look up specific people by ID (max 100; each ID has the `person_` prefix). Accepts multiple `ids=` query params or a single comma-delimited value (e.g., `ids=person_1,person_2`). When set, `name_filter` defaults to `all` so unnamed clusters are included in the lookup.",
 			QueryPath: "ids",
 		},
-		&requestflag.Flag[*string]{
+		&requestflag.Flag[any]{
 			Name:      "include",
-			Usage:     "Comma-separated list of opt-in expansion fields. Supported values: `cluster_metrics` (adds the nested `cluster_metrics` object — `pairwise_p90`, `pairwise_mean`, `face_count` — for each Person with a populated centroid). Unknown values return 422.",
+			Usage:     "Opt-in expansion fields. Supported values: `cluster_metrics` (adds the nested `cluster_metrics` object — `pairwise_p90`, `pairwise_mean`, `face_count` — for each Person with a populated centroid). Accepts multiple `include=` query params or a single comma-delimited value. Unknown values return 422.",
 			QueryPath: "include",
 		},
 		&requestflag.Flag[*string]{

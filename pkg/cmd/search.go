@@ -107,7 +107,7 @@ var searchSearchAssets = cli.Command{
 		},
 		&requestflag.Flag[any]{
 			Name:     "person-id",
-			Usage:    "Filter to only include assets containing ALL of these person IDs. Can be comma-delimited string (e.g. 'person_123,person_abc') or multiple query parameters.",
+			Usage:    "Filter to assets containing ALL of these person IDs (intersection, not union). Accepts multiple `person_ids=` form fields or a single comma-delimited value (e.g., `person_123,person_abc`). Get person IDs from `list_people`.",
 			BodyPath: "person_ids",
 		},
 		&requestflag.Flag[*string]{
