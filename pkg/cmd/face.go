@@ -25,9 +25,9 @@ var facesRetrieve = cli.Command{
 			Required:  true,
 			PathParam: "face_id",
 		},
-		&requestflag.Flag[*string]{
+		&requestflag.Flag[any]{
 			Name:      "include",
-			Usage:     "Comma-separated list of opt-in expansion fields. See `list_faces` for supported values.",
+			Usage:     "Opt-in expansion fields. See `list_faces` for supported values. Accepts multiple `include=` query params or a single comma-delimited value.",
 			QueryPath: "include",
 		},
 		&requestflag.Flag[*string]{
@@ -78,12 +78,12 @@ var facesList = cli.Command{
 		},
 		&requestflag.Flag[any]{
 			Name:      "id",
-			Usage:     "Look up specific faces by ID (max 100). IDs use the `face_` prefix.",
+			Usage:     "Look up specific faces by ID (max 100). IDs use the `face_` prefix. Accepts multiple `ids=` query params or a single comma-delimited value (e.g., `ids=face_1,face_2`).",
 			QueryPath: "ids",
 		},
-		&requestflag.Flag[*string]{
+		&requestflag.Flag[any]{
 			Name:      "include",
-			Usage:     "Comma-separated list of opt-in expansion fields. Supported values: `cluster_assignment` (adds the nested `cluster_assignment` object — `distance_to_person` and a top-K `candidates` list of nearby Persons).",
+			Usage:     "Opt-in expansion fields. Supported values: `cluster_assignment` (adds the nested `cluster_assignment` object — `distance_to_person` and a top-K `candidates` list of nearby Persons). Accepts multiple `include=` query params or a single comma-delimited value (e.g., `include=cluster_assignment`).",
 			QueryPath: "include",
 		},
 		&requestflag.Flag[*string]{

@@ -16,7 +16,7 @@ func TestFacesRetrieve(t *testing.T) {
 			"--api-key", "string",
 			"faces", "retrieve",
 			"--face-id", "face_id",
-			"--include", "include",
+			"--include", "[string, string]",
 			"--library-id", "library_id",
 		)
 	})
@@ -58,7 +58,7 @@ func TestFacesList(t *testing.T) {
 			"--max-items", "10",
 			"--asset-id", "asset_id",
 			"--id", "[string, string]",
-			"--include", "include",
+			"--include", "[string, string]",
 			"--library-id", "library_id",
 			"--limit", "1",
 			"--person-id", "person_id",

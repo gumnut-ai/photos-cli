@@ -49,7 +49,7 @@ func TestPeopleRetrieve(t *testing.T) {
 			"--api-key", "string",
 			"people", "retrieve",
 			"--person-id", "person_id",
-			"--include", "include",
+			"--include", "[string, string]",
 		)
 	})
 }
@@ -98,7 +98,7 @@ func TestPeopleList(t *testing.T) {
 			"--album-id", "album_id",
 			"--asset-id", "asset_id",
 			"--id", "[string, string]",
-			"--include", "include",
+			"--include", "[string, string]",
 			"--library-id", "library_id",
 			"--limit", "1",
 			"--name", "name",

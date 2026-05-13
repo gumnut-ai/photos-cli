@@ -98,7 +98,7 @@ var albumsList = cli.Command{
 		},
 		&requestflag.Flag[any]{
 			Name:      "id",
-			Usage:     "Look up specific albums by ID (max 100; each ID has the `album_` prefix). Use for bulk fetch when IDs are already known.",
+			Usage:     "Look up specific albums by ID (max 100; each ID has the `album_` prefix). Accepts multiple `ids=` query params or a single comma-delimited value (e.g., `ids=album_1,album_2`).",
 			QueryPath: "ids",
 		},
 		&requestflag.Flag[*string]{

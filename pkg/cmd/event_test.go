@@ -18,7 +18,7 @@ func TestEventsGet(t *testing.T) {
 			"--after-cursor", "after_cursor",
 			"--created-at-gte", "'2019-12-27T18:11:19.117Z'",
 			"--created-at-lt", "'2019-12-27T18:11:19.117Z'",
-			"--entity-types", "entity_types",
+			"--entity-type", "[string, string]",
 			"--library-id", "library_id",
 			"--limit", "1",
 		)
