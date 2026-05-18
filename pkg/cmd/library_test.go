@@ -95,3 +95,27 @@ func TestLibrariesDelete(t *testing.T) {
 		)
 	})
 }
+
+func TestLibrariesRestore(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"libraries", "restore",
+			"--library-id", "library_id",
+		)
+	})
+}
+
+func TestLibrariesTrash(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"libraries", "trash",
+			"--library-id", "library_id",
+		)
+	})
+}

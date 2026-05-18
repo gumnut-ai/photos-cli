@@ -109,6 +109,38 @@ var librariesDelete = cli.Command{
 	HideHelpCommand: true,
 }
 
+var librariesRestore = cli.Command{
+	Name:    "restore",
+	Usage:   "Restores a previously-trashed library so it reappears in default list/search\nresults. Works as long as the library row still exists — once `get_library`\nreturns 404 the row is gone and restore is no longer possible. If the background\ndrain has already started purging assets, restore succeeds but recovers only the\nassets the drain hasn't gotten to yet.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "library-id",
+			Usage:     "Library ID (with `lib_` prefix) of the trashed library to restore.",
+			Required:  true,
+			PathParam: "library_id",
+		},
+	},
+	Action:          handleLibrariesRestore,
+	HideHelpCommand: true,
+}
+
+var librariesTrash = cli.Command{
+	Name:    "trash",
+	Usage:   "Moves the library and all its contents into the trash. The library becomes\ninaccessible by default and can be fully restored within 90 days by calling\n`restore_library`. After 90 days the library's assets are gradually purged in\nthe background; until the library row itself is removed, restore still works but\nrecovers only the assets not yet purged.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "library-id",
+			Usage:     "Library ID (with `lib_` prefix) of the library to trash.",
+			Required:  true,
+			PathParam: "library_id",
+		},
+	},
+	Action:          handleLibrariesTrash,
+	HideHelpCommand: true,
+}
+
 func handleLibrariesCreate(ctx context.Context, cmd *cli.Command) error {
 	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -305,4 +337,71 @@ func handleLibrariesDelete(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	return client.Libraries.Delete(ctx, cmd.Value("library-id").(string), options...)
+}
+
+func handleLibrariesRestore(ctx context.Context, cmd *cli.Command) error {
+	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("library-id") && len(unusedArgs) > 0 {
+		cmd.Set("library-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatRepeat,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Libraries.Restore(ctx, cmd.Value("library-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "libraries restore",
+		Transform:      transform,
+	})
+}
+
+func handleLibrariesTrash(ctx context.Context, cmd *cli.Command) error {
+	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("library-id") && len(unusedArgs) > 0 {
+		cmd.Set("library-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatRepeat,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	return client.Libraries.Trash(ctx, cmd.Value("library-id").(string), options...)
 }
