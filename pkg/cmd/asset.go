@@ -315,6 +315,42 @@ var assetsTrash = cli.Command{
 	HideHelpCommand: true,
 }
 
+var assetsUpdateAsset = cli.Command{
+	Name:    "update-asset",
+	Usage:   "Edits the user-editable metadata for a single asset — description, GPS\ncoordinates, and original capture datetime. Only fields included in the request\nbody are changed; others are left untouched. Passing `null` for a field removes\na previously-set value; the response then falls back to the value embedded in\nthe file when present. `latitude` and `longitude` must be set together (both\nwritten or both cleared).",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "asset-id",
+			Usage:     "Asset ID (with `asset_` prefix) of the asset to update. Obtain from `list_assets`, `search_assets`, or `list_album_assets`.",
+			Required:  true,
+			PathParam: "asset_id",
+		},
+		&requestflag.Flag[*string]{
+			Name:     "description",
+			Usage:    "User-set description for the asset. Pass ``null`` to remove a previously-set value (the response then falls back to the description embedded in the file, if any). Omit to leave unchanged. Distinct from the AI-generated `description` field on the response — this writes to `metadata.description`.",
+			BodyPath: "description",
+		},
+		&requestflag.Flag[*float64]{
+			Name:     "latitude",
+			Usage:    "GPS latitude in decimal degrees, ``[-90, 90]``. Must be set together with ``longitude``. Pass ``null`` (along with ``longitude=null``) to remove a previously-set value; omit to leave unchanged.",
+			BodyPath: "latitude",
+		},
+		&requestflag.Flag[*float64]{
+			Name:     "longitude",
+			Usage:    "GPS longitude in decimal degrees, ``[-180, 180]``. Must be set together with ``latitude``. Pass ``null`` (along with ``latitude=null``) to remove a previously-set value; omit to leave unchanged.",
+			BodyPath: "longitude",
+		},
+		&requestflag.Flag[any]{
+			Name:     "original-datetime",
+			Usage:    "When the asset was originally captured. Aware values store the offset from ``utcoffset()`` alongside; naive values store NULL offset. Pass ``null`` to remove a previously-set value — the response then falls back to the datetime embedded in the file when present, otherwise to the file's upload timestamp. Omit to leave unchanged.",
+			BodyPath: "original_datetime",
+		},
+	},
+	Action:          handleAssetsUpdateAsset,
+	HideHelpCommand: true,
+}
+
 func handleAssetsCreate(ctx context.Context, cmd *cli.Command) error {
 	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -654,4 +690,53 @@ func handleAssetsTrash(ctx context.Context, cmd *cli.Command) error {
 	params := photos.AssetTrashParams{}
 
 	return client.Assets.Trash(ctx, params, options...)
+}
+
+func handleAssetsUpdateAsset(ctx context.Context, cmd *cli.Command) error {
+	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("asset-id") && len(unusedArgs) > 0 {
+		cmd.Set("asset-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatRepeat,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	params := photos.AssetUpdateAssetParams{}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Assets.UpdateAsset(
+		ctx,
+		cmd.Value("asset-id").(string),
+		params,
+		options...,
+	)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "assets update-asset",
+		Transform:      transform,
+	})
 }
