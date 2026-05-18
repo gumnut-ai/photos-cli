@@ -131,10 +131,27 @@ func handleAlbumsAssetsAssociationsRemove(ctx context.Context, cmd *cli.Command)
 
 	params := photos.AlbumAssetsAssociationRemoveParams{}
 
-	return client.Albums.AssetsAssociations.Remove(
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Albums.AssetsAssociations.Remove(
 		ctx,
 		cmd.Value("album-id").(string),
 		params,
 		options...,
 	)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "albums:assets-associations remove",
+		Transform:      transform,
+	})
 }

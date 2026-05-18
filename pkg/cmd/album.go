@@ -351,5 +351,22 @@ func handleAlbumsDelete(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	return client.Albums.Delete(ctx, cmd.Value("album-id").(string), options...)
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Albums.Delete(ctx, cmd.Value("album-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "albums delete",
+		Transform:      transform,
+	})
 }

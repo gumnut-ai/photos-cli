@@ -95,7 +95,7 @@ var librariesList = cli.Command{
 
 var librariesDelete = cli.Command{
 	Name:    "delete",
-	Usage:   "Expedites the background purge on a **trashed** library: the 90-day undo window\nis waived and the drain begins claiming this library on the next scheduled tick.\nReturns 204 immediately; the drain proceeds asynchronously in bounded batches\nand does not block on completion. Restore still works until the drain finishes\npurging all assets, but past this point it will recover only the assets the\ndrain hasn't gotten to yet. Returns 409 if the library has not been trashed yet;\ntrash it first.",
+	Usage:   "Expedites the background purge on a **trashed** library: the 90-day undo window\nis waived and the drain begins claiming this library on the next scheduled tick.\nReturns immediately; the drain proceeds asynchronously in bounded batches and\ndoes not block on completion. Restore still works until the drain finishes\npurging all assets, but past this point it will recover only the assets the\ndrain hasn't gotten to yet. Returns 409 if the library has not been trashed yet;\ntrash it first.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -336,7 +336,24 @@ func handleLibrariesDelete(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	return client.Libraries.Delete(ctx, cmd.Value("library-id").(string), options...)
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Libraries.Delete(ctx, cmd.Value("library-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "libraries delete",
+		Transform:      transform,
+	})
 }
 
 func handleLibrariesRestore(ctx context.Context, cmd *cli.Command) error {
@@ -403,5 +420,22 @@ func handleLibrariesTrash(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	return client.Libraries.Trash(ctx, cmd.Value("library-id").(string), options...)
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Libraries.Trash(ctx, cmd.Value("library-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "libraries trash",
+		Transform:      transform,
+	})
 }
