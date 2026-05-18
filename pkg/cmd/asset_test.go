@@ -232,3 +232,34 @@ func TestAssetsTrash(t *testing.T) {
 		)
 	})
 }
+
+func TestAssetsUpdateAsset(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"assets", "update-asset",
+			"--asset-id", "asset_id",
+			"--description", "description",
+			"--latitude", "0",
+			"--longitude", "0",
+			"--original-datetime", "'2019-12-27T18:11:19.117Z'",
+		)
+	})
+
+	t.Run("piping data", func(t *testing.T) {
+		// Test piping YAML data over stdin
+		pipeData := []byte("" +
+			"description: description\n" +
+			"latitude: 0\n" +
+			"longitude: 0\n" +
+			"original_datetime: '2019-12-27T18:11:19.117Z'\n")
+		mocktest.TestRunMockTestWithPipeAndFlags(
+			t, pipeData,
+			"--api-key", "string",
+			"assets", "update-asset",
+			"--asset-id", "asset_id",
+		)
+	})
+}

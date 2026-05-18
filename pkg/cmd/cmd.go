@@ -110,6 +110,7 @@ func init() {
 					&assetsEmptyTrash,
 					&assetsRestore,
 					&assetsTrash,
+					&assetsUpdateAsset,
 				},
 			},
 			{
