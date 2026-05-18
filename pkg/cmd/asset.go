@@ -511,7 +511,24 @@ func handleAssetsDelete(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	return client.Assets.Delete(ctx, cmd.Value("asset-id").(string), options...)
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Assets.Delete(ctx, cmd.Value("asset-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "assets delete",
+		Transform:      transform,
+	})
 }
 
 func handleAssetsCheckExistence(ctx context.Context, cmd *cli.Command) error {
@@ -617,7 +634,24 @@ func handleAssetsDeleteList(ctx context.Context, cmd *cli.Command) error {
 
 	params := photos.AssetDeleteListParams{}
 
-	return client.Assets.DeleteList(ctx, params, options...)
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Assets.DeleteList(ctx, params, options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "assets delete-list",
+		Transform:      transform,
+	})
 }
 
 func handleAssetsEmptyTrash(ctx context.Context, cmd *cli.Command) error {
@@ -641,7 +675,24 @@ func handleAssetsEmptyTrash(ctx context.Context, cmd *cli.Command) error {
 
 	params := photos.AssetEmptyTrashParams{}
 
-	return client.Assets.EmptyTrash(ctx, params, options...)
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Assets.EmptyTrash(ctx, params, options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "assets empty-trash",
+		Transform:      transform,
+	})
 }
 
 func handleAssetsRestore(ctx context.Context, cmd *cli.Command) error {
@@ -665,7 +716,24 @@ func handleAssetsRestore(ctx context.Context, cmd *cli.Command) error {
 
 	params := photos.AssetRestoreParams{}
 
-	return client.Assets.Restore(ctx, params, options...)
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Assets.Restore(ctx, params, options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "assets restore",
+		Transform:      transform,
+	})
 }
 
 func handleAssetsTrash(ctx context.Context, cmd *cli.Command) error {
@@ -689,7 +757,24 @@ func handleAssetsTrash(ctx context.Context, cmd *cli.Command) error {
 
 	params := photos.AssetTrashParams{}
 
-	return client.Assets.Trash(ctx, params, options...)
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Assets.Trash(ctx, params, options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "assets trash",
+		Transform:      transform,
+	})
 }
 
 func handleAssetsUpdateAsset(ctx context.Context, cmd *cli.Command) error {

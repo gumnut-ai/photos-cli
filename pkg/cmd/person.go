@@ -431,7 +431,24 @@ func handlePeopleDelete(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	return client.People.Delete(ctx, cmd.Value("person-id").(string), options...)
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.People.Delete(ctx, cmd.Value("person-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "people delete",
+		Transform:      transform,
+	})
 }
 
 func handlePeopleMerge(ctx context.Context, cmd *cli.Command) error {

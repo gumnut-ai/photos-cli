@@ -314,10 +314,27 @@ func handleFacesDelete(ctx context.Context, cmd *cli.Command) error {
 
 	params := photos.FaceDeleteParams{}
 
-	return client.Faces.Delete(
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Faces.Delete(
 		ctx,
 		cmd.Value("face-id").(string),
 		params,
 		options...,
 	)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "faces delete",
+		Transform:      transform,
+	})
 }
