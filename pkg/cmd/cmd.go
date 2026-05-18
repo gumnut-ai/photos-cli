@@ -172,6 +172,8 @@ func init() {
 					&librariesUpdate,
 					&librariesList,
 					&librariesDelete,
+					&librariesRestore,
+					&librariesTrash,
 				},
 			},
 			{
