@@ -79,6 +79,7 @@ func TestLibrariesList(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"libraries", "list",
+			"--state", "live",
 		)
 	})
 }
