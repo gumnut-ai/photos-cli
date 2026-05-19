@@ -95,7 +95,7 @@ var librariesList = cli.Command{
 
 var librariesDelete = cli.Command{
 	Name:    "delete",
-	Usage:   "Expedites the background purge on a **trashed** library: the 90-day undo window\nis waived and the drain begins claiming this library on the next scheduled tick.\nReturns immediately; the drain proceeds asynchronously in bounded batches and\ndoes not block on completion. Restore still works until the drain finishes\npurging all assets, but past this point it will recover only the assets the\ndrain hasn't gotten to yet. Returns 409 if the library has not been trashed yet;\ntrash it first.",
+	Usage:   "Expedites the background purge on a **trashed** library: the 90-day undo window\nis waived and the drain begins claiming this library on the next scheduled tick.\nReturns immediately; the drain proceeds asynchronously in bounded batches and\ndoes not block on completion. `restore_library` still works until the drain\nfinishes purging all assets, but past this point it will recover only the assets\nthe drain hasn't gotten to yet. Returns 409 if the library has not been trashed\nyet — call `trash_library` first.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{

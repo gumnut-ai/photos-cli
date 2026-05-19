@@ -186,7 +186,7 @@ var assetsCheckExistence = cli.Command{
 
 var assetsCounts = cli.Command{
 	Name:    "counts",
-	Usage:   "Returns asset counts grouped by time period. Supports optional filtering by\nalbum, person, or date range. Results are ordered by time bucket descending.",
+	Usage:   "Counts assets bucketed by time period — use this to summarize a library (or a\nfiltered slice) without paging through the full timeline. Returns one row per\nbucket, ordered most-recent-first, with optional filtering by album, person,\ndate range, or trash state.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[*string]{
@@ -196,7 +196,7 @@ var assetsCounts = cli.Command{
 		},
 		&requestflag.Flag[string]{
 			Name:      "group-by",
-			Usage:     "Time period to group counts by. Currently only 'month' is supported.",
+			Usage:     "Time period to group counts by. Only `month` is supported; other values return 422.",
 			Default:   "month",
 			QueryPath: "group_by",
 		},
