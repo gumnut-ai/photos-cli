@@ -132,7 +132,7 @@ func TestAssetsCounts(t *testing.T) {
 			"--api-key", "string",
 			"assets", "counts",
 			"--album-id", "album_id",
-			"--group-by", "group_by",
+			"--group-by", "month",
 			"--library-id", "library_id",
 			"--limit", "1",
 			"--local-datetime-after", "'2019-12-27T18:11:19.117Z'",
