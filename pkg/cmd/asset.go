@@ -149,6 +149,35 @@ var assetsDelete = cli.Command{
 	HideHelpCommand: true,
 }
 
+var assetsBulkUpdateAssets = requestflag.WithInnerFlags(cli.Command{
+	Name:    "bulk-update-assets",
+	Usage:   "Updates metadata on multiple assets in one transactional call. Each item carries\nthe target asset id and the per-asset change — different fields can be changed\non different assets in the same request. Atomic: any per-item validation failure\nor unknown / cross-user id rejects the whole batch and writes nothing.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[[]map[string]any]{
+			Name:     "update",
+			Usage:    "List of per-asset updates. Each item carries the target asset id and the change to apply to it; different fields can be changed on different assets in the same request. Up to 100 items per request.",
+			Required: true,
+			BodyPath: "updates",
+		},
+	},
+	Action:          handleAssetsBulkUpdateAssets,
+	HideHelpCommand: true,
+}, map[string][]requestflag.HasOuterFlag{
+	"update": {
+		&requestflag.InnerFlag[string]{
+			Name:       "update.id",
+			Usage:      "Asset ID (with the `asset_` prefix) to apply this change to. Obtain from `list_assets`, `search_assets`, or `list_album_assets`.",
+			InnerField: "id",
+		},
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "update.change",
+			Usage:      "The change to apply to this asset. Same shape as the body of the single-asset `update_asset` endpoint — same fields, same validation, same null-clears-the-override semantics.",
+			InnerField: "change",
+		},
+	},
+})
+
 var assetsCheckExistence = cli.Command{
 	Name:    "check-existence",
 	Usage:   "Checks which assets exist in the user's library based on checksums or device\nidentifiers. Provide exactly one of: checksums, checksum_sha1s, or (deviceId AND\ndeviceAssetIds). List parameters are limited to 5000 items.",
@@ -527,6 +556,47 @@ func handleAssetsDelete(ctx context.Context, cmd *cli.Command) error {
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "assets delete",
+		Transform:      transform,
+	})
+}
+
+func handleAssetsBulkUpdateAssets(ctx context.Context, cmd *cli.Command) error {
+	client := photos.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatRepeat,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	params := photos.AssetBulkUpdateAssetsParams{}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Assets.BulkUpdateAssets(ctx, params, options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "assets bulk-update-assets",
 		Transform:      transform,
 	})
 }
