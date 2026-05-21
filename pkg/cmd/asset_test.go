@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/gumnut-ai/photos-cli/internal/mocktest"
+	"github.com/gumnut-ai/photos-cli/internal/requestflag"
 )
 
 func TestAssetsCreate(t *testing.T) {
@@ -86,6 +87,49 @@ func TestAssetsDelete(t *testing.T) {
 			"--api-key", "string",
 			"assets", "delete",
 			"--asset-id", "asset_id",
+		)
+	})
+}
+
+func TestAssetsBulkUpdateAssets(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"assets", "bulk-update-assets",
+			"--update", "{id: id, change: {description: description, latitude: 0, longitude: 0, original_datetime: '2019-12-27T18:11:19.117Z'}}",
+		)
+	})
+
+	t.Run("inner flags", func(t *testing.T) {
+		// Check that inner flags have been set up correctly
+		requestflag.CheckInnerFlags(assetsBulkUpdateAssets)
+
+		// Alternative argument passing style using inner flags
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"assets", "bulk-update-assets",
+			"--update.id", "id",
+			"--update.change", "{description: description, latitude: 0, longitude: 0, original_datetime: '2019-12-27T18:11:19.117Z'}",
+		)
+	})
+
+	t.Run("piping data", func(t *testing.T) {
+		// Test piping YAML data over stdin
+		pipeData := []byte("" +
+			"updates:\n" +
+			"  - id: id\n" +
+			"    change:\n" +
+			"      description: description\n" +
+			"      latitude: 0\n" +
+			"      longitude: 0\n" +
+			"      original_datetime: '2019-12-27T18:11:19.117Z'\n")
+		mocktest.TestRunMockTestWithPipeAndFlags(
+			t, pipeData,
+			"--api-key", "string",
+			"assets", "bulk-update-assets",
 		)
 	})
 }

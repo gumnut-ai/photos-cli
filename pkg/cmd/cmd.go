@@ -104,6 +104,7 @@ func init() {
 					&assetsRetrieve,
 					&assetsList,
 					&assetsDelete,
+					&assetsBulkUpdateAssets,
 					&assetsCheckExistence,
 					&assetsCounts,
 					&assetsDeleteList,
