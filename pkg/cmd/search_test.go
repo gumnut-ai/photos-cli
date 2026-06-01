@@ -18,6 +18,7 @@ func TestSearchSearch(t *testing.T) {
 			"search", "search",
 			"--captured-after", "'2019-12-27T18:11:19.117Z'",
 			"--captured-before", "'2019-12-27T18:11:19.117Z'",
+			"--include", "[string, string]",
 			"--library-id", "library_id",
 			"--limit", "1",
 			"--page", "1",
@@ -35,6 +36,7 @@ func TestSearchSearchAssets(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"search", "search-assets",
+			"--include", "[string, string]",
 			"--captured-after", "'2019-12-27T18:11:19.117Z'",
 			"--captured-before", "'2019-12-27T18:11:19.117Z'",
 			"--image", mocktest.TestFile(t, "Example data"),
@@ -67,6 +69,7 @@ func TestSearchSearchAssets(t *testing.T) {
 			t, pipeData,
 			"--api-key", "string",
 			"search", "search-assets",
+			"--include", "[string, string]",
 		)
 	})
 }

@@ -67,6 +67,11 @@ var assetsRetrieve = cli.Command{
 			Required:  true,
 			PathParam: "asset_id",
 		},
+		&requestflag.Flag[any]{
+			Name:      "include",
+			Usage:     "Opt-in expansion fields. Supported values: `metadata` (camera/EXIF/GPS and location names), `faces`, `people`, `metrics` (ML quality scores), and `file_data` (a group token gating the file/provenance scalars `device_asset_id`, `device_id`, `file_created_at`, `file_modified_at`, `checksum`, `checksum_sha1`, `file_size_bytes`). Accepts multiple `include=` query params or a single comma-delimited value (e.g. `include=faces,people`). Unknown values return 422. When omitted, all fields are returned (transition default).",
+			QueryPath: "include",
+		},
 	},
 	Action:          handleAssetsRetrieve,
 	HideHelpCommand: true,
@@ -86,6 +91,11 @@ var assetsList = cli.Command{
 			Name:      "id",
 			Usage:     "Look up specific assets by ID (max 100; each ID has the `asset_` prefix). Accepts multiple `ids=` query params or a single comma-delimited value (e.g., `ids=asset_1,asset_2`). Combines with other filters (album_id, person_id, datetime range) using AND logic — the result is the intersection.",
 			QueryPath: "ids",
+		},
+		&requestflag.Flag[any]{
+			Name:      "include",
+			Usage:     "Opt-in expansion fields. Supported values: `metadata` (camera/EXIF/GPS and location names), `faces`, `people`, `metrics` (ML quality scores), and `file_data` (a group token gating the file/provenance scalars `device_asset_id`, `device_id`, `file_created_at`, `file_modified_at`, `checksum`, `checksum_sha1`, `file_size_bytes`). Accepts multiple `include=` query params or a single comma-delimited value (e.g. `include=faces,people`). Unknown values return 422. When omitted, all fields are returned (transition default).",
+			QueryPath: "include",
 		},
 		&requestflag.Flag[*string]{
 			Name:      "library-id",
@@ -443,9 +453,16 @@ func handleAssetsRetrieve(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
+	params := photos.AssetGetParams{}
+
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Assets.Get(ctx, cmd.Value("asset-id").(string), options...)
+	_, err = client.Assets.Get(
+		ctx,
+		cmd.Value("asset-id").(string),
+		params,
+		options...,
+	)
 	if err != nil {
 		return err
 	}

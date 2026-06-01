@@ -54,6 +54,7 @@ func TestAssetsRetrieve(t *testing.T) {
 			"--api-key", "string",
 			"assets", "retrieve",
 			"--asset-id", "asset_id",
+			"--include", "[string, string]",
 		)
 	})
 }
@@ -68,6 +69,7 @@ func TestAssetsList(t *testing.T) {
 			"--max-items", "10",
 			"--album-id", "album_id",
 			"--id", "[string, string]",
+			"--include", "[string, string]",
 			"--library-id", "library_id",
 			"--limit", "1",
 			"--local-datetime-after", "'2019-12-27T18:11:19.117Z'",
